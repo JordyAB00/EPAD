@@ -1,0 +1,1297 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semana 1: Introducción a la estadística y al análisis de datos</title>
+    
+    <!-- Reveal.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.4.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.4.0/theme/night.min.css">
+    
+    <!-- Highlight.js para código -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+    
+    <style>
+        :root {
+            --main-bg-gradient: linear-gradient(135deg, #000428 0%, #004e92 100%);
+            --accent-color: #61dafb;
+            --accent-color-2: #ff0099;
+            --text-color: #f5f5f5;
+            --highlight-color: #ff0099;
+        }
+        
+        body {
+            background: var(--main-bg-gradient);
+        }
+        
+        .reveal {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .reveal h1, .reveal h2, .reveal h3, .reveal h4 {
+            font-family: 'Montserrat', 'Segoe UI', sans-serif;
+            text-transform: none;
+            letter-spacing: -0.02em;
+        }
+        
+        .reveal h1 {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: var(--accent-color);
+            text-shadow: 0 0 10px rgba(97, 218, 251, 0.4);
+        }
+        
+        .reveal h2 {
+            font-size: 1.8em;
+            font-weight: 600;
+            color: var(--accent-color);
+        }
+        
+        .reveal h3 {
+            font-size: 1.4em;
+            font-weight: 600;
+            color: var(--accent-color);
+        }
+        
+        .reveal p, .reveal li {
+            font-size: 1.2em;
+            line-height: 1.6;
+        }
+        
+        .reveal blockquote {
+            width: 85%;
+            background: rgba(255,255,255,0.05);
+            border-left: 5px solid var(--accent-color);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            padding: 20px;
+            font-style: italic;
+        }
+        
+        .reveal blockquote p {
+            margin: 0;
+        }
+        
+        .reveal pre {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            border-radius: 8px;
+        }
+        
+        .reveal code {
+            font-family: 'Fira Code', monospace;
+            border-radius: 4px;
+            padding: 0 5px;
+        }
+        
+        /* Estilos para tarjetas */
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .card {
+            background: rgba(0,20,60,0.4);
+            border-radius: 8px;
+            padding: 20px;
+            width: 280px;
+            text-align: left;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            border-top: 3px solid var(--accent-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+        }
+        
+        .card-icon {
+            font-size: 2em;
+            color: var(--accent-color);
+            margin-bottom: 15px;
+        }
+        
+        .card h4 {
+            font-size: 1.2em !important;
+            margin-bottom: 10px;
+            color: var(--accent-color) !important;
+        }
+        
+        .card p {
+            font-size: 0.9em !important;
+            margin: 0;
+            color: var(--text-color);
+        }
+        
+        /* Estilos para timeline */
+        .timeline {
+            position: relative;
+            max-width: 90%;
+            margin: 0 auto;
+            padding-top: 20px;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 3px;
+            background: var(--accent-color);
+            opacity: 0.5;
+        }
+        
+        .timeline-item {
+            width: 45%;
+            margin-bottom: 30px;
+            position: relative;
+            padding: 15px;
+            border-radius: 8px;
+            background: rgba(0,20,60,0.4);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        .timeline-item:nth-child(odd) {
+            margin-left: auto;
+        }
+        
+        .timeline-item:nth-child(odd)::before {
+            content: '';
+            position: absolute;
+            left: -15px;
+            top: 20px;
+            width: 15px;
+            height: 3px;
+            background: var(--accent-color);
+            opacity: 0.5;
+        }
+        
+        .timeline-item:nth-child(even)::before {
+            content: '';
+            position: absolute;
+            right: -15px;
+            top: 20px;
+            width: 15px;
+            height: 3px;
+            background: var(--accent-color);
+            opacity: 0.5;
+        }
+        
+        .timeline-icon {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-weight: bold;
+            top: 10px;
+        }
+        
+        .timeline-item:nth-child(odd) .timeline-icon {
+            left: -45px;
+        }
+        
+        .timeline-item:nth-child(even) .timeline-icon {
+            right: -45px;
+        }
+        
+        .timeline-item h4 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: var(--accent-color);
+        }
+        
+        /* Estilos para gráficos y diagramas */
+        .data-flow {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 30px 0;
+        }
+        
+        .data-stage {
+            text-align: center;
+            width: 120px;
+            padding: 15px 10px;
+            border-radius: 8px;
+            background: rgba(0,20,60,0.6);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            position: relative;
+        }
+        
+        .data-stage p {
+            margin: 5px 0 0 0;
+            font-size: 0.9em !important;
+        }
+        
+        .data-stage::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: -30px;
+            width: 30px;
+            height: 3px;
+            background: var(--accent-color);
+            opacity: 0.7;
+        }
+        
+        .data-stage:last-child::after {
+            display: none;
+        }
+        
+        .data-stage-icon {
+            font-size: 1.8em;
+            color: var(--accent-color);
+        }
+        
+        /* Estilos para la comparación de tipos de analítica */
+        .analytics-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.9em;
+        }
+        
+        .analytics-table th, .analytics-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(97, 218, 251, 0.3);
+        }
+        
+        .analytics-table th {
+            background-color: rgba(97, 218, 251, 0.1);
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+        
+        .analytics-table tr:nth-child(even) {
+            background-color: rgba(0,0,0,0.1);
+        }
+        
+        /* Estilo para la imagen de perfil del profesor */
+        .profesor-profile {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: rgba(0,20,60,0.4);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        .profesor-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--accent-color);
+        }
+        
+        .profesor-info h4 {
+            margin: 0 0 5px 0;
+            color: var(--accent-color);
+        }
+        
+        .profesor-info p {
+            margin: 0;
+            font-size: 0.9em !important;
+        }
+        
+        /* Diagramas de Venn y gráficos estadísticos */
+        .venn-diagram {
+            position: relative;
+            height: 400px;
+            width: 100%;
+            margin: 0 auto;
+        }
+        
+        .venn-circle {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2em;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+        }
+        
+        .circle1 {
+            width: 220px;
+            height: 220px;
+            background-color: #4285F4;
+            left: 150px;
+            top: 80px;
+        }
+        
+        .circle2 {
+            width: 200px;
+            height: 200px;
+            background-color: #EA4335;
+            left: 280px;
+            top: 100px;
+        }
+        
+        .circle3 {
+            width: 180px;
+            height: 180px;
+            background-color: #FBBC05;
+            left: 220px;
+            top: 180px;
+        }
+        
+        /* Estilos para gráficas de barras estadísticas */
+        .stat-graph {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            height: 250px;
+            width: 100%;
+            margin: 30px auto;
+        }
+        
+        .stat-bar {
+            width: 60px;
+            background: linear-gradient(to top, var(--accent-color), var(--accent-color-2));
+            border-radius: 5px 5px 0 0;
+            position: relative;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            transition: height 0.8s ease;
+        }
+        
+        .stat-bar-label {
+            position: absolute;
+            bottom: -25px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 0.8em;
+            color: var(--text-color);
+        }
+        
+        .stat-bar-value {
+            position: absolute;
+            top: -25px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 0.8em;
+            color: var(--accent-color);
+        }
+        
+        /* Footer */
+        .slide-footer {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            font-size: 0.6em;
+            color: rgba(255,255,255,0.6);
+        }
+        
+        /* Logo ULACIT */
+        .logo-ulacit {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 100px;
+            opacity: 0.8;
+        }
+        
+        /* Personalización de controles de navegación */
+        .reveal .controls {
+            color: var(--accent-color);
+        }
+        
+        .reveal .progress {
+            color: var(--accent-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <!-- Portada -->
+            <section data-background="linear-gradient(135deg, #000428 0%, #004e92 100%)">
+                <h1>Introducción a la estadística y<br>al análisis de datos</h1>
+                <h3>Semana 1</h3>
+                <p style="margin-top: 40px;">Estadística para el análisis de datos</p>
+                <div class="profesor-profile" style="margin-top: 50px;">
+                    <img src="https://via.placeholder.com/100" alt="Profesor" class="profesor-img">
+                    <div class="profesor-info">
+                        <h4>Jordy Jesús Alfaro Brenes</h4>
+                        <p>Data Scientist & Profesor</p>
+                        <p>jalfarob050@ulacit.ed.cr</p>
+                    </div>
+                </div>
+                <div class="slide-footer">
+                    Universidad Latinoamericana de Ciencia y Tecnología - ULACIT
+                </div>
+                <img src="https://via.placeholder.com/150x50" alt="ULACIT" class="logo-ulacit">
+            </section>
+            
+            <!-- Agenda -->
+            <section>
+                <h2>Contenidos de la semana</h2>
+                <ul>
+                    <li>Fundamentos de la estadística y su rol en la ciencia de datos</li>
+                    <li>Panorama general de la analítica de datos: descriptiva, predictiva y prescriptiva</li>
+                    <li>Ciclo de vida de un proyecto de análisis de datos</li>
+                </ul>
+                <blockquote>
+                    <p>La estadística es el arte de extraer conocimiento e información a partir de los datos.</p>
+                </blockquote>
+                <div class="slide-footer">
+                    Semana 1: Introducción a la estadística y al análisis de datos
+                </div>
+            </section>
+            
+            <!-- Módulo 1: Fundamentos de la estadística -->
+            <section>
+                <section data-background="linear-gradient(135deg, #000428 0%, #004e92 100%)">
+                    <h2>Fundamentos de la estadística y su rol en la ciencia de datos</h2>
+                    <div class="card-container">
+                        <div class="card">
+                            <div class="card-icon"><i class="fas fa-chart-bar"></i></div>
+                            <h4>Definición</h4>
+                            <p>¿Qué es la estadística y cómo se relaciona con la ciencia de datos?</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-icon"><i class="fas fa-history"></i></div>
+                            <h4>Evolución</h4>
+                            <p>De la estadística tradicional a la ciencia de datos moderna</p>
+                        </div>
+                        <div class="card">
+                            <div class="card-icon"><i class="fas fa-cogs"></i></div>
+                            <h4>Aplicaciones</h4>
+                            <p>Impacto y uso en diversos campos y disciplinas</p>
+                        </div>
+                    </div>
+                    <div class="slide-footer">
+                        Semana 1: Fundamentos de la estadística y su rol en la ciencia de datos
+                    </div>
+                </section>
+                
+                <section>
+                    <h3>¿Qué es la estadística?</h3>
+                    <p>La estadística es la ciencia que se ocupa de la recolección, organización, análisis, interpretación y presentación de datos.</p>
+                    <div style="display: flex; gap: 30px; margin-top: 30px;">
+                        <div style="flex: 1; background: rgba(0,20,60,0.4); padding: 20px; border-radius: 8px; border-top: 3px solid #61dafb;">
+                            <h4>Estadística descriptiva</h4>
+                            <p style="font-size: 0.9em !important;">Se centra en resumir, organizar y describir un conjunto de datos mediante medidas numéricas y visuales.</p>
+                        </div>
+                        <div style="flex: 1; background: rgba(0,20,60,0.4); padding: 20px; border-radius: 8px; border-top: 3px solid #ff0099;">
+                            <h4>Estadística inferencial</h4>
+                            <p style="font-size: 0.9em !important;">Utiliza métodos para hacer deducciones, predicciones y generalizaciones sobre una población basándose en una muestra.</p>
+                        </div>
+                    </div>
+                    <p style="margin-top: 30px;">La estadística proporciona las <span style="color: #61dafb;">herramientas fundamentales</span> que sustentan gran parte de la metodología utilizada en la ciencia de datos moderna.</p>
+                    <div class="slide-footer">
+                        Semana 1: Fundamentos de la estadística y su rol en la ciencia de datos
+                    </div>
+                </section>
+                
+                <section>
+                    <h3>Estadística en la ciencia de datos</h3>
+                    <div class="venn-diagram">
+                        <div class="venn-circle circle1">Estadística</div>
+                        <div class="venn-circle circle2">Informática</div>
+                        <div class="venn-circle circle3">Conocimiento del dominio</div>
+                        <div style="position: absolute; left: 230px; top: 140px; color: white; font-weight: bold; font-size: 1.2em;">Ciencia<br>de<br>Datos</div>
+                    </div>
+                    <p>La ciencia de datos emerge de la intersección de múltiples disciplinas, con la estadística como uno de sus pilares fundamentales.</p>
+                    <div class="slide-footer">
+                        Semana 1: Fundamentos de la estadística y su rol en la ciencia de datos
+                    </div>
+                </section>
+                
+                <section>
+                    <h3>Conceptos estadísticos fundamentales</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
+                        <div style="background: rgba(0,20,60,0.4); padding: 15px; border-radius: 8px;">
+                            <h4 style="color: #61dafb; margin-top: 0;">Población vs. Muestra</h4>
+                            <p style="font-size: 0.9em !important; margin-bottom: 0;">Totalidad de individuos vs. Subconjunto representativo</p>
+                        </div>
+                        <div style="background: rgba(0,20,60,0.4); padding: 15px; border-radius: 8px;">
+                            <h4 style="color: #61dafb; margin-top: 0;">Variables y tipos de datos</h4>
+                            <p style="font-size: 0.9em !important; margin-bottom: 0;">Numéricas (discretas/continuas), categóricas (nominales/ordinales)</p>
+                        </div>
+                        <div style="background: rgba(0,20,60,0.4); padding: 15px; border-radius: 8px;">
+                            <h4 style="color: #61dafb; margin-top: 0;">Medidas de tendencia central</h4>
+                            <p style="font-size: 0.9em !important; margin-bottom: 0;">Media, mediana, moda</p>
+                        </div>
+                        <div style="background: rgba(0,20,60,0.4); padding: 15px; border-radius: 8px;">
+                            <h4 style="color: #61dafb; margin-top: 0;">Medidas de dispersión</h4>
+                            <p style="font-size: 0.9em !important; margin-bottom: 0;">Rango, varianza, desviación estándar</p>
+                        </div>
+                        <div style="background: rgba(0,20,60,0.4); padding: 15px; border-radius: 8px;">
+                            <h4 style="color: #61dafb; margin-top: 0;">Distribuciones</h4>
+                            <p style="font-size: 0.9em !important; margin-bottom: 0;">Normal, binomial, Poisson, etc.</p>
+                        </div>
+                        <div style="background: rgba(0,20,60,0.4); padding: 15px; border-radius: 8px;">
+                            <h4 style="color: #61dafb; margin-top: 0;">Correlación y causalidad</h4>
+                            <p style="font-size: 0.9em !important; margin-bottom: 0;">Relación vs. causa-efecto</p>
+                        </div>
+                    </div>
+                    <p style="margin-top: 20px;">Estos conceptos son la base del pensamiento estadístico que se aplica en el análisis de datos.</p>
+                    <div class="slide-footer">
+                        Semana 1: Fundamentos de la estadística y su rol en la ciencia de datos
+                    </div>
+                </section>
+                
+                <section>
+                    <h3>Evolución: De la estadística clásica a la ciencia de datos</h3>
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-icon">1</div>
+                            <h4>Estadística clásica</h4>
+                            <p>Centrada en muestras pequeñas, pruebas de hipótesis, inferencia paramétrica</p>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-icon">2</div>
+                            <h4>Análisis exploratorio</h4>
+                            <p>Enfoque en visualización, patrones, resúmenes numéricos</p>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-icon">3</div>
+                            <h4>Minería de datos</h4>
+                            <p>Algoritmos para descubrir patrones en grandes volúmenes de datos</p>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-icon">4</div>
+                            <h4>Aprendizaje automático</h4>
+                            <p>Algoritmos que aprenden de los datos sin programación explícita</p>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-icon">5</div>
+                            <h4>Ciencia de datos</h4>
+                            <p>Integración de estadística, informática y conocimiento del dominio</p>
+                        </div>
+                    </div>
+                    <div class="slide-footer">
+                        Semana 1: Fundamentos de la estadística y su rol en la ciencia de datos
+                    </div>
+                </section>
+                
+                <section>
+                    <h3>Aplicaciones de la estadística en el mundo real</h3>
+                    <div class="card-container">
+                        <div class="card" style="width: 200px;">
+                            <div class="card-icon"><i class="fas fa-shopping-cart"></i></div>
+                            <h4>Negocios</h4>
+                            <p>Segmentación de clientes, análisis de ventas, previsión de demanda</p>
+                        </div>
+                        <div class="card" style="width: 200px;">
+                            <div class="card-icon"><i class="fas fa-heartbeat"></i></div>
+                            <h4>Salud</h4>
+                            <p>Ensayos clínicos, epidemiología, medicina personalizada</p>
+                        </div>
+                        <div class="card" style="width: 200px;">
+                            <div class="card-icon"><i class="fas fa-chart-line"></i></div>
+                            <h4>Finanzas</h4>
+                            <p>Gestión de riesgos, detección de fraudes, algoritmos de trading</p>
+                        </div>
+                        <div class="card" style="width: 200px;">
+                            <div class="card-icon"><i class="fas fa-globe"></i></div>
+                            <h4>Ciencias sociales</h4>
+                            <p>Estudios demográficos, análisis de encuestas, investigación social</p>
+                        </div>
+                        <div class="card" style="width: 200px;">
+                            <div class="card-icon"><i class="fas fa-industry"></i></div>
+                            <h4>Manufactura</h4>
+                            <p>Control de calidad, optimización de procesos, mantenimiento predictivo</p>
+                        </div>
+                        <div class="card" style="width: 200px;">
+                            <div class="card-icon"><i class="fas fa-database"></i></div>
+                            <h4>Tecnología</h4>
+                            <p>Sistemas de recomendación, motores de búsqueda, visión por computadora</p>
+                        </div>
+                    </div>
+                    <div class="slide-footer">
+                        Semana 1: Fundamentos de la estadística y su rol en la ciencia de datos
+                    </div>
+                </section>
+            </section>
+            
+            <!-- Módulo 2: Analítica de datos -->
+            <section>
+                <section data-background="linear-gradient(135deg, #000428 0%, #004e92 100%)">
+                    <h2>Panorama general de la analítica de datos</h2>
+                    <h3>Descriptiva, predictiva y prescriptiva</h3>
+                    <div style="margin-top: 30px;">
+                        <img src="https://via.placeholder.com/800x400" alt="Tipos de analítica" style="max-width: 80%; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">
+                    </div>
+                    <div class="slide-footer">
+                        Semana 1: Panorama general de la analítica de datos
+                    </div>
+                </section>
+                
+                <section>
+                    <h3>El espectro de la analítica de datos</h3>
+                    <div class="data-flow">
+                        <div class="data-stage">
+                            <div class="data-stage-icon"><i class="fas fa-search"></i></div>
+                            <h4 style="margin: 10px 0 0 0; font-size: 1em;">Descriptiva</h4>
+                            <p>"¿Qué pasó?"</p>
+                        </div>
+                        <div class="data-stage">
+                            <div class="data-stage-icon"><i class="fas fa-diagnoses"></i></div>
+                            <h4 style="margin: 10px 0 0 0; font-size: 1em;">Diagnóstica</h4>
+                            <p>"¿Por qué pasó?"</p>
+                        </div>
+                        <div class="data-stage">
+                            <div class="data-stage-icon"><i class="fas fa-chart-line"></i></div>
+                            <h4 style="margin: 10px 0 0 0; font-size: 1em;">Predictiva</h4>
+                            <p>"¿Qué pasará?"</p>
+                        </div>
+                        <div class="data-stage">
+                            <div class="data-stage-icon"><i class="fas fa-lightbulb"></i></div>
+                            <h4 style="margin: 10px 0 0 0; font-size: 1em;">Prescriptiva</h4>
+                            <p>"¿Qué hacer?"</p>
+                        </div>
+                    </div>
+                    
+                    <p>La analítica de datos evoluciona desde entender el pasado hasta guiar decisiones futuras, aumentando progresivamente en complejidad y valor para el negocio.</p>
+                    <div class="slide-footer">
+                        Semana 1: Panorama general de la analítica de datos
+                    </div>
+                </section>
+                
+                <section>
+                    <h3>Analítica descriptiva</h3>
+                    <div style="display: flex; gap: 30px; align-items: center;">
+                        <div style="flex: 1;">
+                            <blockquote>
+                                <p>"La analítica descriptiva responde a la pregunta: <span style="color: #61dafb;">¿Qué ha ocurrido?</span>"</p>
+                            </blockquote>
+                            <ul>
+                                <li>Se centra en resumir los datos históricos</li>
+                                <li>Proporciona contexto y entendimiento básico</li>
+                                <li>Utiliza medidas estadísticas, tablas y visualizaciones</li>
+                                <li>Es el fundamento para análisis más avanzados</li>
+                            </ul>
+                        </div>
+                        <div style="flex: 1; background: rgba(0,20,60,0.4); padding: 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+                            <h4 style="color: #61dafb; margin-top: 0;">Técnicas y herramientas</h4>
+                            <ul>
+                                <li>Medidas de tendencia central y dispersión</li>
+                                <li>Tablas de frecuencia y tablas cruzadas</li>
+                                <li>Visualizaciones: histogramas, gráficos de barras, diagramas de caja</li>
+                                <li>Dashboards y reportes automatizados</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="stat-graph">
+                        <div class="stat-bar" style="height: 60%;">
+                            <div class="stat-bar-label">Q1 2023</div>
+                            <div class="stat-bar-value">60%</div>
+                        </div>
+                        <div class="stat-bar" style="height: 80%;">
+                            <div class="stat-bar-label">Q2 2023</div>
+                            <div class="stat-bar-value">80%</div>
+                        </div>
+                        <div class="stat-bar" style="height: 65%;">
+                            <div class="stat-bar-label">Q3 2023</div>
+                            <div class="stat-bar-value">65%</div>
+                        </div>
+                        <div class="stat-bar" style="height: 90%;">
+                            <div class="stat-bar-label">Q4 2023</div>
+                            <div class="stat-bar-value">90%</div>
+                        </div>
+                        <div class="stat-bar" style="height: 70%;">
+                            <div class="stat-bar-label">Q1 2024</div>
+                            <div class="stat-bar-value">70%</div>
+                        </div>
+                    </div>
+                    <div class="slide-footer">
+                        Semana 1: Panorama general de la analítica de datos
+                    </div>
+                </section>
+                
+                <section>
+                    <h3>Analítica predictiva</h3>
+                    <div style="display: flex; gap: 30px; align-items: center;">
+                        <div style="flex: 1;">
+                            <blockquote>
+                                <p>"La analítica predictiva responde a la pregunta: <span style="color: #ff0099;">¿Qué es probable que ocurra?</span>"</p>
+                            </blockquote>
+                            <ul>
+                                <li>Utiliza datos históricos para predecir eventos futuros</li>
+                                <li>Se basa en modelos estadísticos y algoritmos de ML</li>
+                                <li>Identifica patrones y relaciones en los datos</li>
+                                <li>Cuantifica la probabilidad de resultados futuros</li>
+                            </ul>
+                        </div>
+                        <div style="flex: 1; background: rgba(0,20,60,0.4); padding: 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+                            <h4 style="color: #ff0099; margin-top: 0;">Técnicas y herramientas</h4>
+                            <ul>
+                                <li>Regresión lineal y logística</li>
+                                <li>Series temporales (ARIMA, Prophet)</li>
+                                <li>Árboles de decisión y bosques aleatorios</li>
+                                <li>Redes neuronales y deep learning</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <img src="https://via.placeholder.com/800x200" alt="Gráfico predictivo" style="max-width: 80%; margin-top: 20px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">
+                    <div class="slide-footer">
+                        Semana 1: Panorama general de la analítica de datos
+                    </div>
+                </section>
+                
+                <section>
+                    <h3>Analítica prescriptiva</h3>
+                    <div style="display: flex; gap: 30px; align-items: center;">
+                        <div style="flex: 1;">
+                            <blockquote>
+                                <p>"La analítica prescriptiva responde a la pregunta: <span style="color: #61dafb;">¿Qué debemos hacer?</span>"</p>
+                            </blockquote>
+                            <ul>
+                                <li>No solo predice lo que ocurrirá, sino que recomienda acciones</li>
+                                <li>Evalúa diferentes escenarios y sus resultados</li>
+                                <li>Considera restricciones y objetivos de negocio</li>
+                                <li>Representa el nivel más avanzado de analítica</li>
+                            </ul>
+                        </div>
+                        <div style="flex: 1; background: rgba(0,20,60,0.4); padding: 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+                            <h4 style="color: #61dafb; margin-top: 0;">Técnicas y herramientas</h4>
+                            <ul>
+                                <li>Optimización y programación lineal</li>
+                                <li>Simulación de Monte Carlo</li>
+                                <li>Sistemas de recomendación</li>
+                                <li>Inteligencia artificial avanzada</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <img src="https://via.placeholder.com/800x200" alt="Diagrama prescriptivo" style="max-width: 80%; margin-top: 20px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">
+                    <div class="slide-footer">
+                        Semana 1: Panorama general de la analítica de datos
+                    </div>
+                </section>
+                
+                <section>
+                    <h3>Comparación de los tipos de analítica</h3>
+                    <table class="analytics-table">
+                        <thead>
+                            <tr>
+                                <th>Característica</th>
+                                <th>Descriptiva</th>
+                                <th>Predictiva</th>
+                                <th>Prescriptiva</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Pregunta clave</td>
+                                <td>¿Qué pasó?</td>
+                                <td>¿Qué pasará?</td>
+                                <td>¿Qué hacer?</td>
+                            </tr>
+                            <tr>
+                                <td>Enfoque temporal</td>
+                                <td>Pasado</td>
+                                <td>Futuro</td>
+                                <td>Futuro con acciones</td>
+                            </tr>
+                            <tr>
+                                <td>Complejidad</td>
+                                <td>Baja a media</td>
+                                <td>Media a alta</td>
+                                <td>Alta</td>
+                            </tr>
+                            <tr>
+                                <td>Técnicas principales</td>
+                                <td>Estadística descriptiva</td>
+                                <td>Machine Learning</td>
+                                <td>Optimización, IA</td>
+                            </tr>
+                            <tr>
+                                <td>Valor empresarial</td>
+                                <td>Fundamental</td>
+                                <td>Estratégico</td>
+                                <td>Transformador</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p>Cada tipo de analítica tiene su lugar en una estrategia de datos integral, formando un continuo que incrementa en sofisticación y potencial de impacto.</p>
+                    <div class="slide-footer">
+                        Semana 1: Panorama general de la analítica de datos
+                    </div>
+                </section>
+            </section>
+            
+            <!-- Módulo 3: Ciclo de vida de un proyecto de análisis de datos -->
+            <section>
+                <section data-background="linear-gradient(135deg, #000428 0%, #004e92 100%)">
+                    <h2>Ciclo de vida de un proyecto de análisis de datos</h2>
+                    <div style="margin-top: 30px;">
+                        <img src="https://via.placeholder.com/800x400" alt="Ciclo de vida de análisis de datos" style="max-width: 80%; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">
+                    </div>
+                    <div class="slide-footer">
+                        Semana 1: Ciclo de vida de un proyecto de análisis de datos
+                    </div>
+                </section>
+                
+                <section>
+                    <h3>Visión general del ciclo de análisis de datos</h3>
+                    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-top: 30px;">
+                        <div style="width: 150px; height: 150px; background: rgba(0,20,60,0.5); border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.3); position: relative;">
+                            <i class="fas fa-question-circle" style="font-size: 2em; color: #61dafb;"></i>
+                            <p style="margin: 10px 0 0 0; font-size: 0.9em;">1. Definición del problema</p>
+                            <div style="position: absolute; top: 50%; right: -20px; width: 40px; height: 3px; background: #61dafb; transform: translateY(-50%); z-index: -1;"></div>
+                        </div>
+                        <div style="width: 150px; height: 150px; background: rgba(0,20,60,0.5); border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.3); position: relative;">
+                            <i class="fas fa-database" style="font-size: 2em; color: #61dafb;"></i>
+                            <p style="margin: 10px 0 0 0; font-size: 0.9em;">2. Recolección de datos</p>
+                            <div style="position: absolute; top: 50%; right: -20px; width: 40px; height: 3px; background: #61dafb; transform: translateY(-50%); z-index: -1;"></div>
+                        </div>
+                        <div style="width: 150px; height: 150px; background: rgba(0,20,60,0.5); border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.3); position: relative;">
+                            <i class="fas fa-broom" style="font-size: 2em; color: #61dafb;"></i>
+                            <p style="margin: 10px 0 0 0; font-size: 0.9em;">3. Limpieza de datos</p>
+                            <div style="position: absolute; top: 50%; right: -20px; width: 40px; height: 3px; background: #61dafb; transform: translateY(-50%); z-index: -1;"></div>
+                        </div>
+                        <div style="width: 150px; height: 150px; background: rgba(0,20,60,0.5); border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.3); position: relative;">
+                            <i class="fas fa-search" style="font-size: 2em; color: #ff0099;"></i>
+                            <p style="margin: 10px 0 0 0; font-size: 0.9em;">4. Exploración y análisis</p>
+                            <div style="position: absolute; top: 50%; right: -20px; width: 40px; height: 3px; background: #ff0099; transform: translateY(-50%); z-index: -1;"></div>
+                        </div>
+                        <div style="width: 150px; height: 150px; background: rgba(0,20,60,0.5); border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.3); position: relative;">
+                            <i class="fas fa-chart-bar" style="font-size: 2em; color: #ff0099;"></i>
+                            <p style="margin: 10px 0 0 0; font-size: 0.9em;">5. Visualización</p>
+                            <div style="position: absolute; top: 50%; right: -20px; width: 40px; height: 3px; background: #ff0099; transform: translateY(-50%); z-index: -1;"></div>
+                        </div>
+                        <div style="width: 150px; height: 150px; background: rgba(0,20,60,0.5); border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+                            <i class="fas fa-lightbulb" style="font-size: 2em; color: #ff0099;"></i>
+                            <p style="margin: 10px 0 0 0; font-size: 0.9em;">6. Comunicación e implementación</p>
+                        </div>
+                    </div>
+                    <p style="margin-top: 40px;">El ciclo de análisis de datos es iterativo, con frecuentes retornos a fases anteriores para refinamiento.</p>
+                    <div class="slide-footer">
+                        Semana 1: Ciclo de vida de un proyecto de análisis de datos
+                    </div>
+                </section>
+                
+                <section>
+                    <h3>Fase 1: Definición del problema</h3>
+                    <div style="display: flex; gap: 30px; align-items: flex-start;">
+                        <div style="flex: 2;">
+                            <p>"Todo análisis efectivo comienza con una pregunta clara."</p>
+                            <ul>
+                                <li>Identificar el problema de negocio a resolver</li>
+                                <li>Definir objetivos específicos y medibles</li>
+                                <li>Establecer el alcance del análisis</li>
+                                <li>Identificar a los stakeholders clave</li>
+                                <li>Determinar los recursos necesarios</li>
+                            </ul>
+                            <div style="background: rgba(0,20,60,0.4); padding: 15px; border-radius: 8px; margin-top: 20px;">
+                                <h4 style="color: #61dafb; margin-top: 0;">Ejemplo</h4>
+                                <p style="font-size: 0.9em !important; margin-bottom: 0;">Una cadena minorista quiere entender los factores que afectan la retención de clientes para diseñar mejores programas de fidelización.</p>
+                            </div>
+                        </div>
+                        <div style="flex: 1; background: rgba(0,20,60,0.4); padding: 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+                            <h4 style="color: #61dafb; margin-top: 0;">Herramientas y técnicas</h4>
+                            <ul>
+                                <li>Entrevistas con stakeholders</li>
+                                <li>Análisis de requisitos</li>
+                                <li>Marcos SMART para objetivos</li>
+                                <li>Análisis de viabilidad</li>
+                                <li>Definición de KPIs</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="slide-footer">
+                        Semana 1: Ciclo de vida de un proyecto de análisis de datos
+                    </div>
+                </section>
+                
+                <section>
+                    <h3>Fase 2: Recolección de datos</h3>
+                    <div style="display: flex; gap: 30px; align-items: flex-start;">
+                        <div style="flex: 2;">
+                            <p>"La calidad de tu análisis nunca será mejor que la calidad de tus datos."</p>
+                            <ul>
+                                <li>Identificar fuentes de datos relevantes</li>
+                                <li>Evaluar la disponibilidad y accesibilidad de los datos</li>
+                                <li>Considerar aspectos éticos y legales (privacidad, consentimiento)</li>
+                                <li>Establecer procedimientos de recolección</li>
+                                <li>Documentar la procedencia y características de los datos</li>
+                            </ul>
+                            <div style="background: rgba(0,20,60,0.4); padding: 15px; border-radius: 8px; margin-top: 20px;">
+                                <h4 style="color: #61dafb; margin-top: 0;">Ejemplo</h4>
+                                <p style="font-size: 0.9em !important; margin-bottom: 0;">Para analizar la retención, la empresa recopila datos de su sistema CRM, historial de compras, interacciones con servicio al cliente y encuestas de satisfacción.</p>
+                            </div>
+                        </div>
+                        <div style="flex: 1; background: rgba(0,20,60,0.4); padding: 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+                            <h4 style="color: #61dafb; margin-top: 0;">Fuentes de datos</h4>
+                            <ul>
+                                <li>Internas (bases de datos, sistemas transaccionales, archivos)</li>
+                                <li>Externas (API, datasets públicos, proveedores)</li>
+                                <li>Web scraping</li>
+                                <li>Sensores e IoT</li>
+                                <li>Encuestas y focus groups</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="slide-footer">
+                        Semana 1: Ciclo de vida de un proyecto de análisis de datos
+                    </div>
+                </section>
+                
+                <section>
+                    <h3>Fase 3: Limpieza y preparación de datos</h3>
+                    <div style="display: flex; gap: 30px; align-items: flex-start;">
+                        <div style="flex: 2;">
+                            <p>"La limpieza de datos suele representar el 80% del tiempo en un proyecto de análisis."</p>
+                            <ul>
+                                <li>Identificar y manejar valores faltantes</li>
+                                <li>Detectar y corregir errores y inconsistencias</li>
+                                <li>Identificar y tratar valores atípicos (outliers)</li>
+                                <li>Transformar variables según sea necesario</li>
+                                <li>Integrar datos de múltiples fuentes</li>
+                                <li>Crear variables derivadas relevantes</li>
+                            </ul>
+                            <div style="background: rgba(0,20,60,0.4); padding: 15px; border-radius: 8px; margin-top: 20px;">
+                                <h4 style="color: #61dafb; margin-top: 0;">Ejemplo</h4>
+                                <p style="font-size: 0.9em !important; margin-bottom: 0;">Se unifican los datos del cliente, se corrigen errores en los identificadores, se eliminan duplicados y se crean variables como "tiempo desde última compra" y "valor total del cliente".</p>
+                            </div>
+                        </div>
+                        <div style="flex: 1; background: rgba(0,20,60,0.4); padding: 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+                            <h4 style="color: #61dafb; margin-top: 0;">Herramientas comunes</h4>
+                            <ul>
+                                <li>R (dplyr, tidyr, data.table)</li>
+                                <li>Python (pandas, numpy)</li>
+                                <li>SQL para transformaciones</li>
+                                <li>OpenRefine</li>
+                                <li>Herramientas ETL especializadas</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="slide-footer">
+                        Semana 1: Ciclo de vida de un proyecto de análisis de datos
+                    </div>
+                </section>
+                
+                <section>
+                    <h3>Fase 4: Exploración y análisis de datos</h3>
+                    <div style="display: flex; gap: 30px; align-items: flex-start;">
+                        <div style="flex: 2;">
+                            <p>"El análisis exploratorio revela patrones y relaciones que guían análisis más profundos."</p>
+                            <ul>
+                                <li>Calcular estadísticas descriptivas básicas</li>
+                                <li>Explorar distribuciones de variables</li>
+                                <li>Examinar relaciones entre variables</li>
+                                <li>Identificar patrones, tendencias y anomalías</li>
+                                <li>Formular y probar hipótesis</li>
+                                <li>Aplicar técnicas analíticas apropiadas según el problema</li>
+                            </ul>
+                            <div style="background: rgba(0,20,60,0.4); padding: 15px; border-radius: 8px; margin-top: 20px;">
+                                <h4 style="color: #ff0099; margin-top: 0;">Ejemplo</h4>
+                                <p style="font-size: 0.9em !important; margin-bottom: 0;">El análisis revela que los clientes tienden a abandonar después de 3 meses sin compras, y que la retención es mayor en clientes que han interactuado con el servicio al cliente.</p>
+                            </div>
+                        </div>
+                        <div style="flex: 1; background: rgba(0,20,60,0.4); padding: 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+                            <h4 style="color: #ff0099; margin-top: 0;">Técnicas analíticas</h4>
+                            <ul>
+                                <li>Análisis univariado y bivariado</li>
+                                <li>Análisis de correlación</li>
+                                <li>Segmentación y clustering</li>
+                                <li>Análisis de series temporales</li>
+                                <li>Modelado predictivo</li>
+                                <li>Minería de texto</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="slide-footer">
+                        Semana 1: Ciclo de vida de un proyecto de análisis de datos
+                    </div>
+                </section>
+                
+                <section>
+                    <h3>Fase 5: Visualización de datos</h3>
+                    <div style="display: flex; gap: 30px; align-items: flex-start;">
+                        <div style="flex: 2;">
+                            <p>"Una visualización efectiva revela la historia detrás de los datos de un vistazo."</p>
+                            <ul>
+                                <li>Seleccionar el tipo de visualización apropiado para los datos</li>
+                                <li>Crear gráficos claros y efectivos</li>
+                                <li>Diseñar dashboards interactivos</li>
+                                <li>Asegurar que las visualizaciones sean accesibles</li>
+                                <li>Evitar distorsiones y representaciones engañosas</li>
+                            </ul>
+                            <div style="background: rgba(0,20,60,0.4); padding: 15px; border-radius: 8px; margin-top: 20px;">
+                                <h4 style="color: #ff0099; margin-top: 0;">Ejemplo</h4>
+                                <p style="font-size: 0.9em !important; margin-bottom: 0;">Se crea un dashboard interactivo mostrando la tasa de retención por segmento de cliente, con la capacidad de filtrar por región, canal de compra y otros factores relevantes.</p>
+                            </div>
+                        </div>
+                        <div style="flex: 1; background: rgba(0,20,60,0.4); padding: 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+                            <h4 style="color: #ff0099; margin-top: 0;">Tipos de visualizaciones</h4>
+                            <ul>
+                                <li>Gráficos de barras y líneas</li>
+                                <li>Histogramas y diagramas de caja</li>
+                                <li>Gráficos de dispersión</li>
+                                <li>Mapas de calor</li>
+                                <li>Gráficos de área y de radar</li>
+                                <li>Mapas geoespaciales</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="slide-footer">
+                        Semana 1: Ciclo de vida de un proyecto de análisis de datos
+                    </div>
+                </section>
+                
+                <section>
+                    <h3>Fase 6: Comunicación e implementación</h3>
+                    <div style="display: flex; gap: 30px; align-items: flex-start;">
+                        <div style="flex: 2;">
+                            <p>"Los mejores análisis fracasan si no pueden comunicarse e implementarse efectivamente."</p>
+                            <ul>
+                                <li>Traducir hallazgos técnicos a lenguaje de negocios</li>
+                                <li>Desarrollar narrativas convincentes basadas en datos</li>
+                                <li>Presentar resultados de manera clara y efectiva</li>
+                                <li>Proporcionar recomendaciones accionables</li>
+                                <li>Implementar hallazgos en procesos y sistemas</li>
+                                <li>Medir el impacto de las acciones tomadas</li>
+                            </ul>
+                            <div style="background: rgba(0,20,60,0.4); padding: 15px; border-radius: 8px; margin-top: 20px;">
+                                <h4 style="color: #ff0099; margin-top: 0;">Ejemplo</h4>
+                                <p style="font-size: 0.9em !important; margin-bottom: 0;">Se presenta un informe ejecutivo con recomendaciones específicas: implementar un programa de recompensas para clientes inactivos por 2+ meses y mejorar el seguimiento post-venta.</p>
+                            </div>
+                        </div>
+                        <div style="flex: 1; background: rgba(0,20,60,0.4); padding: 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+                            <h4 style="color: #ff0099; margin-top: 0;">Componentes clave</h4>
+                            <ul>
+                                <li>Resumen ejecutivo</li>
+                                <li>Metodología utilizada</li>
+                                <li>Hallazgos principales</li>
+                                <li>Visualizaciones impactantes</li>
+                                <li>Recomendaciones específicas</li>
+                                <li>Plan de implementación</li>
+                                <li>Métricas de seguimiento</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="slide-footer">
+                        Semana 1: Ciclo de vida de un proyecto de análisis de datos
+                    </div>
+                </section>
+            </section>
+            
+            <!-- Sección de herramientas y recursos (opcional) -->
+            <section>
+                <h2>Herramientas y recursos para el curso</h2>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 30px;">
+                    <div style="background: rgba(0,20,60,0.4); padding: 20px; border-radius: 8px; border-top: 3px solid #61dafb;">
+                        <h3 style="color: #61dafb; margin-top: 0;">Entorno R y RStudio</h3>
+                        <p>Plataforma principal para análisis estadístico en este curso</p>
+                        <ul>
+                            <li><a href="https://cloud.r-project.org/" target="_blank" style="color: #61dafb;">Descargar R</a></li>
+                            <li><a href="https://posit.co/download/rstudio-desktop/" target="_blank" style="color: #61dafb;">Descargar RStudio</a></li>
+                            <li><a href="https://r4ds.had.co.nz/" target="_blank" style="color: #61dafb;">R for Data Science (libro)</a></li>
+                        </ul><div style="background: rgba(0,20,60,0.4); padding: 20px; border-radius: 8px; border-top: 3px solid #61dafb;">
+                        <h3 style="color: #61dafb; margin-top: 0;">Entorno R y RStudio</h3>
+                        <p>Plataforma principal para análisis estadístico en este curso</p>
+                        <ul>
+                            <li><a href="https://cloud.r-project.org/" target="_blank" style="color: #61dafb;">Descargar R</a></li>
+                            <li><a href="https://posit.co/download/rstudio-desktop/" target="_blank" style="color: #61dafb;">Descargar RStudio</a></li>
+                            <li><a href="https://r4ds.had.co.nz/" target="_blank" style="color: #61dafb;">R for Data Science (libro)</a></li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(0,20,60,0.4); padding: 20px; border-radius: 8px; border-top: 3px solid #ff0099;">
+                        <h3 style="color: #ff0099; margin-top: 0;">Paquetes esenciales de R</h3>
+                        <p>Bibliotecas que utilizaremos frecuentemente</p>
+                        <ul>
+                            <li>tidyverse (dplyr, ggplot2, tidyr, etc.)</li>
+                            <li>readr, readxl (importación de datos)</li>
+                            <li>lubridate (manejo de fechas)</li>
+                            <li>rmarkdown (informes reproducibles)</li>
+                            <li>stats (funciones estadísticas)</li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(0,20,60,0.4); padding: 20px; border-radius: 8px; border-top: 3px solid #61dafb;">
+                        <h3 style="color: #61dafb; margin-top: 0;">Conjuntos de datos</h3>
+                        <p>Para prácticas y proyectos</p>
+                        <ul>
+                            <li><a href="https://www.kaggle.com/datasets" target="_blank" style="color: #61dafb;">Kaggle Datasets</a></li>
+                            <li><a href="https://data.world/" target="_blank" style="color: #61dafb;">Data.world</a></li>
+                            <li><a href="https://datasetsearch.research.google.com/" target="_blank" style="color: #61dafb;">Google Dataset Search</a></li>
+                            <li>Conjuntos específicos del curso (Canvas)</li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(0,20,60,0.4); padding: 20px; border-radius: 8px; border-top: 3px solid #ff0099;">
+                        <h3 style="color: #ff0099; margin-top: 0;">Recursos adicionales</h3>
+                        <p>Para profundizar en los temas</p>
+                        <ul>
+                            <li><a href="https://www.statlearning.com/" target="_blank" style="color: #ff0099;">Introduction to Statistical Learning</a></li>
+                            <li><a href="https://serialmentor.com/dataviz/" target="_blank" style="color: #ff0099;">Fundamentals of Data Visualization</a></li>
+                            <li><a href="https://www.storytellingwithdata.com/" target="_blank" style="color: #ff0099;">Storytelling with Data</a></li>
+                            <li>Foros: Stack Overflow, Cross Validated</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="slide-footer">
+                    Semana 1: Introducción a la estadística y al análisis de datos
+                </div>
+            </section>
+            
+            <!-- Próximos pasos -->
+            <section>
+                <h2>Próximos pasos</h2>
+                <div class="card-container">
+                    <div class="card" style="width: 280px;">
+                        <div class="card-icon"><i class="fas fa-laptop-code"></i></div>
+                        <h4>Instalar R y RStudio</h4>
+                        <p>Preparar el entorno de trabajo para las próximas prácticas</p>
+                    </div>
+                    <div class="card" style="width: 280px;">
+                        <div class="card-icon"><i class="fas fa-book-reader"></i></div>
+                        <h4>Revisar material</h4>
+                        <p>Explorar los recursos recomendados en Canvas</p>
+                    </div>
+                    <div class="card" style="width: 280px;">
+                        <div class="card-icon"><i class="fas fa-users"></i></div>
+                        <h4>Participar activamente</h4>
+                        <p>Involucrarse en discusiones y actividades grupales</p>
+                    </div>
+                </div>
+                <p style="margin-top: 40px;">Próxima semana: <strong style="color: #61dafb;">Fundamentos de programación en R</strong></p>
+                <div class="slide-footer">
+                    Semana 1: Introducción a la estadística y al análisis de datos
+                </div>
+            </section>
+            
+            <!-- Referencias -->
+            <section>
+                <h2>Referencias</h2>
+                <div style="text-align: left; background: rgba(0,20,60,0.4); padding: 20px; border-radius: 8px; margin-top: 20px; font-size: 0.8em;">
+                    <ul>
+                        <li>Wickham, H., & Grolemund, G. (2017). R for Data Science: Import, Tidy, Transform, Visualize, and Model Data. O'Reilly Media.</li>
+                        <li>James, G., Witten, D., Hastie, T., & Tibshirani, R. (2021). An Introduction to Statistical Learning: with Applications in R. Springer.</li>
+                        <li>Chang, W. (2018). R Graphics Cookbook: Practical Recipes for Visualizing Data. O'Reilly Media.</li>
+                        <li>Tufte, E. R. (2001). The Visual Display of Quantitative Information. Graphics Press.</li>
+                        <li>Knaflic, C. N. (2015). Storytelling with Data: A Data Visualization Guide for Business Professionals. Wiley.</li>
+                        <li>Provost, F., & Fawcett, T. (2013). Data Science for Business: What You Need to Know about Data Mining and Data-Analytic Thinking. O'Reilly Media.</li>
+                    </ul>
+                </div>
+                <div class="slide-footer">
+                    Semana 1: Introducción a la estadística y al análisis de datos
+                </div>
+            </section>
+            
+            <!-- Cierre -->
+            <section data-background="linear-gradient(135deg, #000428 0%, #004e92 100%)">
+                <h1>¡Gracias!</h1>
+                <h3>¿Preguntas?</h3>
+                <div style="margin-top: 40px;">
+                    <p>Jordy Jesús Alfaro Brenes</p>
+                    <p><a href="mailto:jalfarob050@ulacit.ed.cr" style="color: #61dafb;">jalfarob050@ulacit.ed.cr</a></p>
+                </div>
+                <div class="slide-footer">
+                    Universidad Latinoamericana de Ciencia y Tecnología - ULACIT
+                </div>
+                <img src="https://via.placeholder.com/150x50" alt="ULACIT" class="logo-ulacit">
+            </section>
+        </div>
+    </div>
+    
+    <!-- Scripts de Reveal.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.4.0/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.4.0/plugin/zoom/zoom.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.4.0/plugin/notes/notes.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.4.0/plugin/search/search.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.4.0/plugin/markdown/markdown.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.4.0/plugin/highlight/highlight.min.js"></script>
+    
+    <script>
+        // Configuración de Reveal.js
+        Reveal.initialize({
+            // Opciones de presentación
+            width: 1200,
+            height: 700,
+            margin: 0.1,
+            minScale: 0.2,
+            maxScale: 2.0,
+            
+            // Controles
+            controls: true,
+            progress: true,
+            center: true,
+            hash: true,
+            
+            // Transiciones
+            transition: 'slide', // none/fade/slide/convex/concave/zoom
+            
+            // Plugins
+            plugins: [
+                RevealZoom,
+                RevealNotes,
+                RevealSearch,
+                RevealMarkdown,
+                RevealHighlight
+            ],
+            
+            // Configuración adicional
+            // Animaciones para elementos
+            // (Requiere animate.css)
+            // Ver: https://github.com/hakimel/reveal.js/wiki/Plugins,-Tools-and-Hardware
+            
+            // Personalización adicional
+            slideNumber: 'c/t',
+            showSlideNumber: 'all',
+            overview: true,
+            touch: true,
+            loop: false,
+            rtl: false,
+            navigationMode: 'default',
+            fragments: true,
+            fragmentInURL: false,
+            help: true,
+            shuffle: false,
+            embedded: false,
+            preloadIframes: true,
+            autoPlayMedia: true,
+            previewLinks: false,
+            autoSlide: 0,
+            autoSlideStoppable: true,
+            mouseWheel: false,
+            hideInactiveCursor: true,
+            hideCursorTime: 3000
+        });
+        
+        // Inicialización de gráficos animados
+        Reveal.addEventListener('slidechanged', function(event) {
+            // Animar barras estadísticas
+            if (event.currentSlide.querySelector('.stat-graph')) {
+                const bars = event.currentSlide.querySelectorAll('.stat-bar');
+                bars.forEach((bar, index) => {
+                    setTimeout(() => {
+                        bar.style.height = bar.getAttribute('data-height') || (Math.random() * 80 + 20) + '%';
+                    }, index * 200);
+                });
+            }
+        });
+        
+        // Efectos adicionales al cargar
+        window.onload = function() {
+            // Inicializar alturas de barras estadísticas
+            document.querySelectorAll('.stat-bar').forEach(bar => {
+                const height = bar.style.height || (Math.random() * 80 + 20) + '%';
+                bar.setAttribute('data-height', height);
+                bar.style.height = '0%'; // Iniciar en cero para animación
+            });
+        };
+    </script>
+</body>
+</html>
