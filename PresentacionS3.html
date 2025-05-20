@@ -1,3 +1,792 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fundamentos de Estadística Descriptiva con R</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+        
+        :root {
+            --primary: #6200ea;
+            --primary-light: #9d46ff;
+            --primary-dark: #0a00b6;
+            --secondary: #00e5ff;
+            --light: #f4f5fd;
+            --dark: #121212;
+            --success: #00c853;
+            --warning: #ffd600;
+            --danger: #ff3d00;
+            --text-light: #ffffff;
+            --text-dark: #212121;
+            --border-radius: 12px;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            --glass: rgba(255, 255, 255, 0.1);
+            --glass-dark: rgba(0, 0, 0, 0.2);
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background: linear-gradient(135deg, #f5f7ff 0%, #e9ebfd 100%);
+        }
+
+        .slides-container {
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+            perspective: 1200px;
+        }
+
+        .slide {
+            width: 100%;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            pointer-events: none;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: translateY(0);
+            z-index: 5;
+            pointer-events: all;
+        }
+
+        .slide-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            background: white;
+            position: relative;
+        }
+
+        .slide-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: var(--text-light);
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide-header::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.1) 100%);
+            transform: rotate(45deg);
+            pointer-events: none;
+        }
+
+        .slide-body {
+            background: white;
+            padding: 30px;
+            flex: 1;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary) var(--light);
+        }
+
+        .slide-body::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .slide-body::-webkit-scrollbar-track {
+            background: var(--light);
+        }
+        
+        .slide-body::-webkit-scrollbar-thumb {
+            background-color: var(--primary);
+            border-radius: 10px;
+        }
+
+        h1 {
+            font-size: 2.6rem;
+            margin-bottom: 10px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        h2 {
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+
+        h3 {
+            font-size: 1.6rem;
+            margin: 25px 0 15px 0;
+            color: var(--primary);
+            font-weight: 600;
+            position: relative;
+            padding-left: 15px;
+            display: inline-block;
+        }
+
+        h3::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            height: 70%;
+            width: 5px;
+            background-color: var(--primary);
+            transform: translateY(-50%);
+            border-radius: 3px;
+        }
+
+        p {
+            margin-bottom: 20px;
+            font-size: 1.15rem;
+            line-height: 1.7;
+        }
+
+        .code-sample {
+            background-color: #1e1e2e;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 10px;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            margin: 15px 0;
+            font-size: 0.92rem;
+            line-height: 1.5;
+            position: relative;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        ul, ol {
+            margin-bottom: 20px;
+            margin-left: 25px;
+        }
+
+        li {
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            position: relative;
+        }
+
+        ul li::before {
+            content: '';
+            position: absolute;
+            left: -20px;
+            top: 10px;
+            width: 8px;
+            height: 8px;
+            background-color: var(--primary);
+            border-radius: 50%;
+        }
+
+        ol {
+            counter-reset: item;
+            list-style-type: none;
+        }
+
+        ol li {
+            counter-increment: item;
+        }
+
+        ol li::before {
+            content: counter(item) ".";
+            position: absolute;
+            left: -20px;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .two-columns {
+            display: flex;
+            gap: 30px;
+            margin: 25px 0;
+        }
+
+        .column {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .img-container {
+            text-align: center;
+            margin: 25px 0;
+        }
+
+        img {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        .note {
+            background: linear-gradient(135deg, rgba(98, 0, 234, 0.05) 0%, rgba(0, 229, 255, 0.05) 100%);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid var(--primary);
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .warning {
+            background: linear-gradient(135deg, rgba(255, 214, 0, 0.05) 0%, rgba(255, 214, 0, 0.1) 100%);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid var(--warning);
+            margin: 20px 0;
+        }
+
+        .tip {
+            background: linear-gradient(135deg, rgba(0, 200, 83, 0.05) 0%, rgba(0, 200, 83, 0.1) 100%);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid var(--success);
+            margin: 20px 0;
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            display: flex;
+            gap: 15px;
+            z-index: 100;
+        }
+
+        button {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(98, 0, 234, 0.3);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(98, 0, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(98, 0, 234, 0.4);
+        }
+
+        .slide-counter {
+            position: fixed;
+            bottom: 40px;
+            left: 40px;
+            background: white;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--primary);
+            box-shadow: var(--shadow);
+            z-index: 100;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--primary);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        tr:nth-child(even) {
+            background-color: rgba(98, 0, 234, 0.03);
+        }
+
+        tr:hover {
+            background-color: rgba(98, 0, 234, 0.07);
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: var(--shadow);
+            border-top: 4px solid var(--primary);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        /* Dataset cards */
+        .dataset-card {
+            display: flex;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            margin: 20px 0;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .dataset-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .dataset-img {
+            width: 35%;
+            min-height: 200px;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .dataset-info {
+            padding: 20px;
+            flex: 1;
+        }
+        
+        .dataset-title {
+            font-size: 1.4rem;
+            color: var(--primary);
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        .dataset-source {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+        
+        .dataset-desc {
+            margin-bottom: 15px;
+        }
+        
+        .dataset-stats {
+            display: flex;
+            gap: 15px;
+            margin-top: auto;
+        }
+        
+        .stat {
+            background: rgba(98, 0, 234, 0.05);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+        
+        .stat-label {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        /* Charts */
+        .chart {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            margin: 20px 0;
+        }
+        
+        .chart-title {
+            font-size: 1.2rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .chart-subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .chart-img {
+            width: 100%;
+            height: auto;
+            margin: 0 auto;
+            display: block;
+        }
+
+        /* Step by step section */
+        .steps {
+            counter-reset: step;
+            margin: 30px 0;
+        }
+        
+        .step {
+            position: relative;
+            padding-left: 60px;
+            margin-bottom: 30px;
+        }
+        
+        .step::before {
+            counter-increment: step;
+            content: counter(step);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            color: white;
+            font-weight: 600;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(98, 0, 234, 0.3);
+        }
+        
+        .step-title {
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        
+        @keyframes slideInUp {
+            0% { transform: translateY(50px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.8s ease forwards;
+        }
+        
+        .animate-slide-up {
+            animation: slideInUp 0.8s ease forwards;
+        }
+        
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+        .delay-5 { animation-delay: 0.5s; }
+        
+        /* Futuristic details */
+        .glow {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--primary-light) 0%, rgba(98, 0, 234, 0) 70%);
+            opacity: 0.3;
+            filter: blur(30px);
+            z-index: -1;
+        }
+        
+        .glow-1 {
+            top: -100px;
+            right: 10%;
+        }
+        
+        .glow-2 {
+            bottom: -50px;
+            left: 5%;
+        }
+        
+        .grid-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+            opacity: 0.5;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+    <div class="slides-container">
+        <!-- Slide 1: Portada -->
+        <div class="slide active">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <div class="glow glow-1"></div>
+                    <div class="glow glow-2"></div>
+                    <div class="grid-bg"></div>
+                    <h1 class="animate-slide-up">Fundamentos de Estadística Descriptiva con R</h1>
+                    <p class="animate-slide-up delay-1">Semanas 2-3: Importación de datos, variables y visualización</p>
+                </div>
+                <div class="slide-body" style="text-align: center; display: flex; flex-direction: column; justify-content: center;">
+                    <img src="/api/placeholder/600/350" alt="R Studio y Data Science" class="animate-fade-in delay-2" style="margin: 0 auto; max-width: 400px; margin-bottom: 40px;">
+                    <h2 class="animate-slide-up delay-3">Análisis exploratorio con R</h2>
+                    <p class="animate-slide-up delay-4" style="font-size: 1.2rem; margin-top: 20px;">Universidad Latinoamericana de Ciencia y Tecnología</p>
+                    <p class="animate-slide-up delay-5" style="font-size: 1.1rem;">Centro de Innovación y Transferencia Tecnológica (CIT)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Contenidos -->
+        <div class="slide">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <h1>Contenidos del taller</h1>
+                </div>
+                <div class="slide-body">
+                    <div class="two-columns">
+                        <div class="column">
+                            <div class="card">
+                                <div class="card-title">Semana 2: Fundamentos de R</div>
+                                <ul>
+                                    <li>Importación y exportación de datos (CSV, Excel)</li>
+                                    <li>Paquetes esenciales: tidyverse, dplyr</li>
+                                    <li>Actividad práctica: Importar conjunto de datos y exploración inicial</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="column">
+                            <div class="card">
+                                <div class="card-title">Semana 3: Estadística descriptiva I</div>
+                                <ul>
+                                    <li>Variables cualitativas y cuantitativas</li>
+                                    <li>Escalas de medición (nominal, ordinal, intervalo, razón)</li>
+                                    <li>Tablas de frecuencia y tablas de contingencia en R</li>
+                                    <li>Visualización de variables categóricas</li>
+                                    <li>Actividad práctica: Análisis descriptivo</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3>Dataset para nuestro análisis</h3>
+                    <div class="dataset-card">
+                        <div class="dataset-img" style="background-image: url('/api/placeholder/500/400');"></div>
+                        <div class="dataset-info">
+                            <div class="dataset-title">Datos Meteorológicos Globales (Global Weather Data)</div>
+                            <div class="dataset-source">Fuente: Kaggle - <a href="https://www.kaggle.com/datasets/samanemami/global-weather-data-daily" target="_blank">Global Weather Data Daily</a></div>
+                            <div class="dataset-desc">
+                                <p>Este dataset contiene información meteorológica diaria de ciudades alrededor del mundo. Incluye variables como temperatura, humedad, velocidad del viento, presión atmosférica, y condiciones climáticas.</p>
+                                <p>Es un dataset ideal para análisis estadístico descriptivo, ya que contiene tanto variables cualitativas (condiciones climáticas, nombre de ciudad/país) como cuantitativas (temperatura, humedad, etc.).</p>
+                            </div>
+                            <div class="dataset-stats">
+                                <div class="stat"><span class="stat-label">Filas:</span> ~5,000</div>
+                                <div class="stat"><span class="stat-label">Columnas:</span> 12</div>
+                                <div class="stat"><span class="stat-label">Países:</span> >100</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="note">
+                        <strong>Nota:</strong> En este taller trabajaremos con un subconjunto limpio del dataset para facilitar el análisis. El script R proporcionado incluye todos los pasos necesarios para descargar, importar y preparar los datos.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Importación de datos -->
+        <div class="slide">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <h1>Importación y exportación de datos</h1>
+                </div>
+                <div class="slide-body">
+                    <h3>Proceso de importación de datos</h3>
+                    <p>El primer paso en cualquier análisis estadístico es la obtención y carga de los datos. En nuestro caso, importaremos el dataset de datos meteorológicos desde Kaggle.</p>
+
+                    <div class="img-container">
+                        <img src="/api/placeholder/800/400" alt="Diagrama de flujo de importación de datos" style="max-width: 600px;">
+                    </div>
+
+                    <h3>Pasos para la importación</h3>
+                    <div class="steps">
+                        <div class="step">
+                            <div class="step-title">Descargar el archivo CSV</div>
+                            <p>Visitaremos la página de Kaggle y descargaremos el archivo CSV del dataset "Global Weather Data Daily". Guardaremos el archivo en nuestro directorio de trabajo.</p>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-title">Instalar y cargar paquetes necesarios</div>
+                            <p>Utilizaremos el paquete <strong>tidyverse</strong> (que incluye readr, dplyr, ggplot2) para importar y manipular nuestros datos.</p>
+                            <div class="code-sample">
+                                # Instalación y carga de paquetes
+                                install.packages("tidyverse")
+                                library(tidyverse)
+                            </div>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-title">Importar el archivo CSV</div>
+                            <p>Utilizando la función <code>read_csv()</code> de readr, importaremos nuestro dataset. Esta función es parte del ecosistema tidyverse y proporciona mejor rendimiento que <code>read.csv()</code> de R base.</p>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-title">Examinar la estructura de los datos</div>
+                            <p>Una vez importados los datos, examinaremos su estructura con funciones como <code>glimpse()</code>, <code>str()</code>, <code>head()</code> y <code>summary()</code>.</p>
+                        </div>
+                    </div>
+
+                    <div class="two-columns">
+                        <div class="column">
+                            <div class="chart">
+                                <div class="chart-title">Vista previa del dataset</div>
+                                <img src="/api/placeholder/400/300" alt="Vista previa de los datos" class="chart-img">
+                            </div>
+                        </div>
+                        <div class="column">
+                            <div class="note">
+                                <strong>Métodos de importación en R</strong>
+                                <ul>
+                                    <li><code>read_csv()</code>: Para archivos CSV (readr)</li>
+                                    <li><code>read_excel()</code>: Para archivos Excel (readxl)</li>
+                                    <li><code>read_tsv()</code>: Para archivos TSV (readr)</li>
+                                    <li><code>read.csv()</code>: Método base R para CSV</li>
+                                    <li><code>read.table()</code>: Método general base R</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3>Exportación de datos</h3>
+                    <p>Tras realizar algunas transformaciones, podemos exportar nuestros datos para uso futuro:</p>
+                    <ul>
+                        <li><strong>CSV</strong>: <code>write_csv(data, "nombre_archivo.csv")</code></li>
+                        <li><strong>Excel</strong>: <code>write_xlsx(data, "nombre_archivo.xlsx")</code> (requiere el paquete writexl)</li>
+                        <li><strong>RDS</strong>: <code>saveRDS(data, "nombre_archivo.rds")</code> (formato nativo de R)</li>
+                    </ul>
+
+                    <div class="tip">
+                        <strong>Consejo práctico:</strong> El formato RDS de R conserva todos los tipos de datos y atributos específicos de R, lo que lo hace ideal para guardar datos procesados entre sesiones.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Paquetes esenciales -->
+        <div class="slide">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <h1>Paquetes esenciales: tidyverse y dplyr</h1>
+                </div>
+                <div class="slide-body">
+                    <div class="two-columns">
+                        <div class="column">
+                            <h3>El ecosistema tidyverse</h3>
+                            <p>Tidyverse es una colección de paquetes de R diseñados para ciencia de datos con una filosofía común de diseño.</p>
+                            <ul>
+                                <li><strong>dplyr</strong>: Manipulación de datos</li>
+                                <li><strong>ggplot2</strong>: Visualización de datos</li>
+                                <li><strong>tidyr</strong>: Reorganización de datos</li>
+                                <li><strong>readr</strong>: Importación de datos</li>
+                                <li><strong>purrr</strong>: Programación funcional</li>
+                                <li><strong>tibble</strong>: Marcos de datos modernos</li>
+                            </ul>
+                        </div>
+                        <div class="column">
+                            <div class="img-container">
+                                <img src="/api/placeholder/500/300" alt="Ecosistema tidyverse" style="max-width: 400px;">
+                            </div>
+                            <div class="note">
+                                <strong>Ventajas de tidyverse:</strong>
+                                <ul>
+                                    <li>Sintaxis consistente y declarativa</li>
+                                    <li>Uso del operador pipe (%>%) para encadenar operaciones</li>
+                                    <li>Funciones optimizadas para tareas comunes</li>
+                                    <li>Excelente integración entre paquetes</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3>dplyr: Manipulación de datos</h3>
+                    <p>dplyr ofrece un conjunto de "verbos" que facilitan las tareas más comunes de manipulación de datos:</p>
+                    
+                    <table>
+                        <tr>
+                            <th>Función</th>
+                            <th>Descripción</th>
+                            <th>Equivalente SQL</th>
+                        </tr>
+                        <tr>
+                            <td><code>filter()</code></td>
+                            <td>Filtrar filas según condiciones</td>
+                            <td>WHERE</td>
+                        </tr>
+                        <tr>
+                            <td><code>select()</code></td>
+                            <td>Seleccionar columnas</td>
+                            <td>SELECT</td>
+                        </tr>
+                        <tr>
+                            <td><code>mutate()</code></td>
+                            <td>Crear o modificar columnas</td>
+                            <td>Expresiones en SELECT</td>
+                        </tr>
+                        <tr>
+                            <td><code>arrange()</code></td>
+                            <td>Ordenar filas</td>
+                            <td>ORDER BY</td>
+                        </tr>
+                        <tr>
+                            <td><code>summarise()</code></td>
+                            <td>Resumir datos</td>
+                            <td>Funciones de agregación</td>
+                        </tr>
+                        <tr>
 <td><code>group_by()</code></td>
            <td>Agrupar datos para operaciones</td>
            <td>GROUP BY</td>
