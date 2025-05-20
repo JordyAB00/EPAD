@@ -617,22 +617,22 @@
                     <div class="dataset-card">
                         <div class="dataset-img" style="background-image: url('/api/placeholder/500/400');"></div>
                         <div class="dataset-info">
-                            <div class="dataset-title">Datos Meteorológicos Globales (Global Weather Data)</div>
-                            <div class="dataset-source">Fuente: Kaggle - <a href="https://www.kaggle.com/datasets/samanemami/global-weather-data-daily" target="_blank">Global Weather Data Daily</a></div>
+                            <div class="dataset-title">Datos del Titanic (Titanic Dataset)</div>
+                            <div class="dataset-source">Fuente: Dataset clásico de machine learning</div>
                             <div class="dataset-desc">
-                                <p>Este dataset contiene información meteorológica diaria de ciudades alrededor del mundo. Incluye variables como temperatura, humedad, velocidad del viento, presión atmosférica, y condiciones climáticas.</p>
-                                <p>Es un dataset ideal para análisis estadístico descriptivo, ya que contiene tanto variables cualitativas (condiciones climáticas, nombre de ciudad/país) como cuantitativas (temperatura, humedad, etc.).</p>
+                                <p>Este dataset contiene información sobre los pasajeros del Titanic, incluyendo datos demográficos, información sobre boletos y cabinas, y si sobrevivieron o no al hundimiento.</p>
+                                <p>Es un dataset ideal para análisis estadístico descriptivo, ya que contiene tanto variables cualitativas (sexo, clase, puerto de embarque) como cuantitativas (edad, tarifa pagada).</p>
                             </div>
                             <div class="dataset-stats">
-                                <div class="stat"><span class="stat-label">Filas:</span> ~5,000</div>
+                                <div class="stat"><span class="stat-label">Filas:</span> 1,309</div>
                                 <div class="stat"><span class="stat-label">Columnas:</span> 12</div>
-                                <div class="stat"><span class="stat-label">Países:</span> >100</div>
+                                <div class="stat"><span class="stat-label">Variables clave:</span> Survived, Class, Sex, Age</div>
                             </div>
                         </div>
                     </div>
 
                     <div class="note">
-                        <strong>Nota:</strong> En este taller trabajaremos con un subconjunto limpio del dataset para facilitar el análisis. El script R proporcionado incluye todos los pasos necesarios para descargar, importar y preparar los datos.
+                        <strong>Nota:</strong> Este dataset histórico es ampliamente utilizado en análisis estadístico y aprendizaje automático. Nos permite explorar preguntas fascinantes como "¿Qué factores influyeron en la supervivencia?" mientras aprendemos técnicas estadísticas básicas.
                     </div>
                 </div>
             </div>
@@ -646,7 +646,7 @@
                 </div>
                 <div class="slide-body">
                     <h3>Proceso de importación de datos</h3>
-                    <p>El primer paso en cualquier análisis estadístico es la obtención y carga de los datos. En nuestro caso, importaremos el dataset de datos meteorológicos desde Kaggle.</p>
+                    <p>El primer paso en cualquier análisis estadístico es la obtención y carga de los datos. En nuestro caso, importaremos el dataset del Titanic.</p>
 
                     <div class="img-container">
                         <img src="/api/placeholder/800/400" alt="Diagrama de flujo de importación de datos" style="max-width: 600px;">
@@ -655,8 +655,8 @@
                     <h3>Pasos para la importación</h3>
                     <div class="steps">
                         <div class="step">
-                            <div class="step-title">Descargar el archivo CSV</div>
-                            <p>Visitaremos la página de Kaggle y descargaremos el archivo CSV del dataset "Global Weather Data Daily". Guardaremos el archivo en nuestro directorio de trabajo.</p>
+                            <div class="step-title">Preparar el archivo CSV</div>
+                            <p>El archivo "titanic.csv" contiene datos sobre los pasajeros del Titanic. Asegúrate de que el archivo esté en tu directorio de trabajo o especifica la ruta completa.</p>
                         </div>
                         
                         <div class="step">
@@ -787,736 +787,760 @@
                             <td>Funciones de agregación</td>
                         </tr>
                         <tr>
-<td><code>group_by()</code></td>
-           <td>Agrupar datos para operaciones</td>
-           <td>GROUP BY</td>
-       </tr>
-       <tr>
-           <td><code>join()</code></td>
-           <td>Combinar datasets (left_join, inner_join, etc.)</td>
-           <td>Varios tipos de JOIN</td>
-       </tr>
-   </table>
+                            <td><code>group_by()</code></td>
+                            <td>Agrupar datos para operaciones</td>
+                            <td>GROUP BY</td>
+                        </tr>
+                        <tr>
+                            <td><code>join()</code></td>
+                            <td>Combinar datasets (left_join, inner_join, etc.)</td>
+                            <td>Varios tipos de JOIN</td>
+                        </tr>
+                    </table>
 
-   <h3>El operador pipe (%>%)</h3>
-   <p>El operador pipe (<code>%>%</code>) permite encadenar operaciones de manera intuitiva, mejorando la legibilidad del código:</p>
-   <div class="code-sample">
-       # Enfoque tradicional (anidado)
-       resultado <- summarise(
-           group_by(
-               filter(datos, temperatura > 25),
-               ciudad
-           ),
-           temp_promedio = mean(temperatura)
-       )
+                    <h3>El operador pipe (%>%)</h3>
+                    <p>El operador pipe (<code>%>%</code>) permite encadenar operaciones de manera intuitiva, mejorando la legibilidad del código:</p>
+                    <div class="code-sample">
+                        # Enfoque tradicional (anidado)
+                       resultado <- summarise(
+                           group_by(
+                               filter(titanic_data, Age > 18),
+                               Pclass
+                           ),
+                           promedio_tarifa = mean(Fare, na.rm = TRUE)
+                       )
 
-       # Con operador pipe
-       resultado <- datos %>%
-           filter(temperatura > 25) %>%
-           group_by(ciudad) %>%
-           summarise(temp_promedio = mean(temperatura))
-   </div>
+                       # Con operador pipe
+                       resultado <- titanic_data %>%
+                           filter(Age > 18) %>%
+                           group_by(Pclass) %>%
+                           summarise(promedio_tarifa = mean(Fare, na.rm = TRUE))
+                   </div>
 
-   <div class="tip">
-       <strong>Flujo de trabajo recomendado con tidyverse:</strong>
-       <ol>
-           <li>Importar datos con <code>read_csv()</code> o similar</li>
-           <li>Transformar datos con verbos de dplyr</li>
-           <li>Visualizar resultados con ggplot2</li>
-           <li>Comunicar hallazgos con R Markdown</li>
-       </ol>
-   </div>
-</div>
-</div>
-</div>
-
-<!-- Slide 5: Exploración inicial -->
-<div class="slide">
-   <div class="slide-content">
-       <div class="slide-header">
-           <h1>Exploración inicial del dataset</h1>
-       </div>
-       <div class="slide-body">
-           <h3>¿Qué buscamos en la exploración inicial?</h3>
-           <p>Antes de realizar cualquier análisis estadístico, necesitamos familiarizarnos con nuestros datos para entender su estructura, calidad y características generales.</p>
-           
-           <div class="two-columns">
-               <div class="column">
-                   <div class="card">
-                       <div class="card-title">Aspectos a examinar</div>
-                       <ul>
-                           <li>Estructura general (filas, columnas)</li>
-                           <li>Tipos de variables (cuantitativas/cualitativas)</li>
-                           <li>Valores faltantes (NA)</li>
-                           <li>Valores atípicos o inconsistentes</li>
-                           <li>Distribuciones básicas</li>
-                       </ul>
+                   <div class="tip">
+                       <strong>Flujo de trabajo recomendado con tidyverse:</strong>
+                       <ol>
+                           <li>Importar datos con <code>read_csv()</code> o similar</li>
+                           <li>Transformar datos con verbos de dplyr</li>
+                           <li>Visualizar resultados con ggplot2</li>
+                           <li>Comunicar hallazgos con R Markdown</li>
+                       </ol>
                    </div>
                </div>
-               <div class="column">
-                   <div class="card">
-                       <div class="card-title">Funciones útiles</div>
-                       <ul>
-                           <li><code>glimpse()</code> - Vista compacta del dataset</li>
-                           <li><code>head()</code> - Primeras filas</li>
-                           <li><code>summary()</code> - Resumen estadístico</li>
-                           <li><code>colSums(is.na())</code> - Conteo de NAs</li>
-                           <li><code>table()</code> - Frecuencias de categorías</li>
-                       </ul>
-                   </div>
-               </div>
-           </div>
-
-           <h3>Variables en el dataset meteorológico</h3>
-           <table>
-               <tr>
-                   <th>Variable</th>
-                   <th>Tipo</th>
-                   <th>Descripción</th>
-               </tr>
-               <tr>
-                   <td>city</td>
-                   <td>Cualitativa (nominal)</td>
-                   <td>Nombre de la ciudad</td>
-               </tr>
-               <tr>
-                   <td>country</td>
-                   <td>Cualitativa (nominal)</td>
-                   <td>País de la ubicación</td>
-               </tr>
-               <tr>
-                   <td>date</td>
-                   <td>Fecha</td>
-                   <td>Fecha de observación</td>
-               </tr>
-               <tr>
-                   <td>temp_max</td>
-                   <td>Cuantitativa (continua)</td>
-                   <td>Temperatura máxima (°C)</td>
-               </tr>
-               <tr>
-                   <td>temp_min</td>
-                   <td>Cuantitativa (continua)</td>
-                   <td>Temperatura mínima (°C)</td>
-               </tr>
-               <tr>
-                   <td>humidity</td>
-                   <td>Cuantitativa (continua)</td>
-                   <td>Humedad relativa (%)</td>
-               </tr>
-               <tr>
-                   <td>wind_speed</td>
-                   <td>Cuantitativa (continua)</td>
-                   <td>Velocidad del viento (km/h)</td>
-               </tr>
-               <tr>
-                   <td>weather_condition</td>
-                   <td>Cualitativa (nominal)</td>
-                   <td>Condición meteorológica (Soleado, Nublado, etc.)</td>
-               </tr>
-           </table>
-
-           <div class="chart">
-               <div class="chart-title">Vista previa de los datos meteorológicos</div>
-               <img src="/api/placeholder/800/350" alt="Vista previa datos meteorológicos" class="chart-img">
-           </div>
-
-           <div class="warning">
-               <strong>Posibles desafíos con este dataset:</strong>
-               <ul>
-                   <li>Valores faltantes en ciertas regiones o fechas</li>
-                   <li>Inconsistencias en la categorización de condiciones meteorológicas</li>
-                   <li>Variaciones estacionales debido a diferentes hemisferios</li>
-               </ul>
            </div>
        </div>
-   </div>
-</div>
 
-<!-- Slide 6: Variables cualitativas y cuantitativas -->
-<div class="slide">
-   <div class="slide-content">
-       <div class="slide-header">
-           <h1>Variables cualitativas y cuantitativas</h1>
+       <!-- Slide 5: Exploración inicial -->
+       <div class="slide">
+           <div class="slide-content">
+               <div class="slide-header">
+                   <h1>Exploración inicial del dataset</h1>
+               </div>
+               <div class="slide-body">
+                   <h3>¿Qué buscamos en la exploración inicial?</h3>
+                   <p>Antes de realizar cualquier análisis estadístico, necesitamos familiarizarnos con nuestros datos para entender su estructura, calidad y características generales.</p>
+                   
+                   <div class="two-columns">
+                       <div class="column">
+                           <div class="card">
+                               <div class="card-title">Aspectos a examinar</div>
+                               <ul>
+                                   <li>Estructura general (filas, columnas)</li>
+                                   <li>Tipos de variables (cuantitativas/cualitativas)</li>
+                                   <li>Valores faltantes (NA)</li>
+                                   <li>Valores atípicos o inconsistentes</li>
+                                   <li>Distribuciones básicas</li>
+                               </ul>
+                           </div>
+                       </div>
+                       <div class="column">
+                           <div class="card">
+                               <div class="card-title">Funciones útiles</div>
+                               <ul>
+                                   <li><code>glimpse()</code> - Vista compacta del dataset</li>
+                                   <li><code>head()</code> - Primeras filas</li>
+                                   <li><code>summary()</code> - Resumen estadístico</li>
+                                   <li><code>colSums(is.na())</code> - Conteo de NAs</li>
+                                   <li><code>table()</code> - Frecuencias de categorías</li>
+                               </ul>
+                           </div>
+                       </div>
+                   </div>
+
+                   <h3>Variables en el dataset del Titanic</h3>
+                   <table>
+                       <tr>
+                           <th>Variable</th>
+                           <th>Tipo</th>
+                           <th>Descripción</th>
+                       </tr>
+                       <tr>
+                           <td>PassengerId</td>
+                           <td>Cuantitativa (discreta)</td>
+                           <td>Identificador único del pasajero</td>
+                       </tr>
+                       <tr>
+                           <td>Survived</td>
+                           <td>Cualitativa (nominal)</td>
+                           <td>Supervivencia (0 = No, 1 = Sí)</td>
+                       </tr>
+                       <tr>
+                           <td>Pclass</td>
+                           <td>Cualitativa (ordinal)</td>
+                           <td>Clase de pasajero (1 = 1ª clase, 2 = 2ª clase, 3 = 3ª clase)</td>
+                       </tr>
+                       <tr>
+                           <td>Name</td>
+                           <td>Cualitativa (nominal)</td>
+                           <td>Nombre del pasajero</td>
+                       </tr>
+                       <tr>
+                           <td>Sex</td>
+                           <td>Cualitativa (nominal)</td>
+                           <td>Sexo (male, female)</td>
+                       </tr>
+                       <tr>
+                           <td>Age</td>
+                           <td>Cuantitativa (continua)</td>
+                           <td>Edad en años</td>
+                       </tr>
+                       <tr>
+                           <td>SibSp</td>
+                           <td>Cuantitativa (discreta)</td>
+                           <td>Número de hermanos/cónyuges a bordo</td>
+                       </tr>
+                       <tr>
+                           <td>Parch</td>
+                           <td>Cuantitativa (discreta)</td>
+                           <td>Número de padres/hijos a bordo</td>
+                       </tr>
+                       <tr>
+                           <td>Ticket</td>
+                           <td>Cualitativa (nominal)</td>
+                           <td>Número de boleto</td>
+                       </tr>
+                       <tr>
+                           <td>Fare</td>
+                           <td>Cuantitativa (continua)</td>
+                           <td>Tarifa pagada</td>
+                       </tr>
+                       <tr>
+                           <td>Cabin</td>
+                           <td>Cualitativa (nominal)</td>
+                           <td>Número de cabina</td>
+                       </tr>
+                       <tr>
+                           <td>Embarked</td>
+                           <td>Cualitativa (nominal)</td>
+                           <td>Puerto de embarque (C = Cherbourg, Q = Queenstown, S = Southampton)</td>
+                       </tr>
+                   </table>
+
+                   <div class="chart">
+                       <div class="chart-title">Vista previa de los datos del Titanic</div>
+                       <img src="/api/placeholder/800/350" alt="Vista previa datos Titanic" class="chart-img">
+                   </div>
+
+                   <div class="warning">
+                       <strong>Posibles desafíos con este dataset:</strong>
+                       <ul>
+                           <li>Valores faltantes en columnas como Age y Cabin</li>
+                           <li>Interpretación de variables como Pclass (¿nominal u ordinal?)</li>
+                           <li>Necesidad de transformar o extraer información de variables como Name</li>
+                       </ul>
+                   </div>
+               </div>
+           </div>
        </div>
-       <div class="slide-body">
-           <h3>Clasificación de variables</h3>
-           <p>La clasificación correcta de las variables es fundamental para determinar los métodos estadísticos adecuados para su análisis.</p>
 
-           <div class="img-container">
-               <img src="/api/placeholder/800/400" alt="Clasificación de variables" style="max-width: 700px;">
-           </div>
+       <!-- Slide 6: Variables cualitativas y cuantitativas -->
+       <div class="slide">
+           <div class="slide-content">
+               <div class="slide-header">
+                   <h1>Variables cualitativas y cuantitativas</h1>
+               </div>
+               <div class="slide-body">
+                   <h3>Clasificación de variables</h3>
+                   <p>La clasificación correcta de las variables es fundamental para determinar los métodos estadísticos adecuados para su análisis.</p>
 
-           <div class="two-columns">
-               <div class="column">
-                   <div class="card">
-                       <div class="card-title">Variables cualitativas (categóricas)</div>
-                       <p>Expresan cualidades o categorías, no cantidades medibles numéricamente.</p>
-                       <ul>
-                           <li><strong>Nominales</strong>: Sin orden natural (ciudad, país, condición meteorológica)</li>
-                           <li><strong>Ordinales</strong>: Con orden natural (intensidad del viento: baja, media, alta)</li>
-                       </ul>
-                       <p>En nuestro dataset:</p>
-                       <ul>
-                           <li><code>city</code>, <code>country</code> (nominales)</li>
-                           <li><code>weather_condition</code> (nominal)</li>
-                       </ul>
+                   <div class="img-container">
+                       <img src="/api/placeholder/800/400" alt="Clasificación de variables" style="max-width: 700px;">
+                   </div>
+
+                   <div class="two-columns">
+                       <div class="column">
+                           <div class="card">
+                               <div class="card-title">Variables cualitativas (categóricas)</div>
+                               <p>Expresan cualidades o categorías, no cantidades medibles numéricamente.</p>
+                               <ul>
+                                   <li><strong>Nominales</strong>: Sin orden natural (sexo, puerto de embarque, cabina)</li>
+                                   <li><strong>Ordinales</strong>: Con orden natural (clase de pasajero: 1ª, 2ª, 3ª)</li>
+                               </ul>
+                               <p>En nuestro dataset:</p>
+                               <ul>
+                                   <li><code>Survived</code>, <code>Sex</code>, <code>Embarked</code> (nominales)</li>
+                                   <li><code>Pclass</code> (ordinal)</li>
+                               </ul>
+                           </div>
+                       </div>
+                       <div class="column">
+                           <div class="card">
+                               <div class="card-title">Variables cuantitativas (numéricas)</div>
+                               <p>Expresan cantidades medibles numéricamente.</p>
+                               <ul>
+                                   <li><strong>Discretas</strong>: Valores enteros, contables (número de hermanos/cónyuges)</li>
+                                   <li><strong>Continuas</strong>: Cualquier valor en un intervalo (edad, tarifa)</li>
+                               </ul>
+                               <p>En nuestro dataset:</p>
+                               <ul>
+                                   <li><code>Age</code>, <code>Fare</code> (continuas)</li>
+                                   <li><code>SibSp</code>, <code>Parch</code> (discretas)</li>
+                               </ul>
+                           </div>
+                       </div>
+                   </div>
+
+                   <h3>Identificando el tipo de variable en R</h3>
+                   <div class="steps">
+                       <div class="step">
+                           <div class="step-title">Verificación de la clase de las variables</div>
+                           <p>R asigna diferentes clases a las variables según su tipo:</p>
+                           <ul>
+                               <li><code>character</code>: Cadenas de texto</li>
+                               <li><code>factor</code>: Variables categóricas</li>
+                               <li><code>numeric</code>: Números (enteros o decimales)</li>
+                               <li><code>integer</code>: Números enteros específicamente</li>
+                               <li><code>Date</code>: Fechas</li>
+                           </ul>
+                       </div>
+                       
+                       <div class="step">
+                           <div class="step-title">Conversión entre tipos</div>
+                           <p>A menudo necesitamos convertir variables entre diferentes tipos:</p>
+                           <div class="code-sample">
+                               # Convertir texto a factor
+                               titanic_data$Sex <- as.factor(titanic_data$Sex)
+                               
+                               # Convertir numeric a factor con orden
+                               titanic_data$Pclass <- factor(titanic_data$Pclass, 
+                                                           levels = c(1, 2, 3),
+                                                           ordered = TRUE)
+                               
+                               # Crear categorías a partir de variables numéricas
+                               titanic_data$Age_Group <- cut(titanic_data$Age, 
+                                                          breaks = c(0, 12, 18, 35, 60, Inf),
+                                                          labels = c("Niño", "Adolescente", 
+                                                                   "Joven adulto", "Adulto", "Mayor"))
+                           </div>
+                       </div>
+                   </div>
+
+                   <div class="note">
+                       <strong>Importancia para el análisis:</strong> El tipo de variable determina qué estadísticos calcular y qué gráficos utilizar. Para variables categóricas utilizaremos frecuencias, moda y gráficos de barras, mientras que para variables numéricas usaremos media, mediana, desviación estándar, histogramas, etc.
                    </div>
                </div>
-               <div class="column">
-                   <div class="card">
-                       <div class="card-title">Variables cuantitativas (numéricas)</div>
-                       <p>Expresan cantidades medibles numéricamente.</p>
-                       <ul>
-                           <li><strong>Discretas</strong>: Valores enteros, contables (número de días de lluvia)</li>
-                           <li><strong>Continuas</strong>: Cualquier valor en un intervalo (temperatura, humedad)</li>
-                       </ul>
-                       <p>En nuestro dataset:</p>
-                       <ul>
-                           <li><code>temp_max</code>, <code>temp_min</code> (continuas)</li>
-                           <li><code>humidity</code>, <code>wind_speed</code> (continuas)</li>
-                       </ul>
-                   </div>
-               </div>
            </div>
+       </div>
 
-           <h3>Identificando el tipo de variable en R</h3>
-           <div class="steps">
-               <div class="step">
-                   <div class="step-title">Verificación de la clase de las variables</div>
-                   <p>R asigna diferentes clases a las variables según su tipo:</p>
+       <!-- Slide 7: Escalas de medición -->
+       <div class="slide">
+           <div class="slide-content">
+               <div class="slide-header">
+                   <h1>Escalas de medición</h1>
+               </div>
+               <div class="slide-body">
+                   <h3>Las cuatro escalas fundamentales</h3>
+                   <p>Las escalas de medición definen el nivel de información contenido en una variable y determinan qué operaciones matemáticas y estadísticas son válidas.</p>
+                   
+                   <table>
+                       <tr>
+                           <th>Escala</th>
+                           <th>Características</th>
+                           <th>Operaciones permitidas</th>
+                           <th>Ejemplos en nuestro dataset</th>
+                       </tr>
+                       <tr>
+                           <td><strong>Nominal</strong></td>
+                           <td>Categorías sin orden</td>
+                           <td>Igualdad/desigualdad (=, ≠)</td>
+                           <td>Sex, Embarked, Survived</td>
+                       </tr>
+                       <tr>
+                           <td><strong>Ordinal</strong></td>
+                           <td>Categorías con orden</td>
+                           <td>Mayor/menor (>, <)</td>
+                           <td>Pclass (1ª, 2ª, 3ª clase)</td>
+                       </tr>
+                       <tr>
+                           <td><strong>Intervalo</strong></td>
+                           <td>Distancias iguales, cero arbitrario</td>
+                           <td>Suma/resta (+, -)</td>
+                           <td>(No hay claros ejemplos en el dataset)</td>
+                       </tr>
+                       <tr>
+                           <td><strong>Razón</strong></td>
+                           <td>Distancias iguales, cero absoluto</td>
+                           <td>Todas (incl. multiplicación/división)</td>
+                           <td>Age, Fare, SibSp, Parch</td>
+                       </tr>
+                   </table>
+
+                   <div class="two-columns">
+                       <div class="column">
+                           <div class="chart">
+                               <div class="chart-title">Jerarquía de escalas de medición</div>
+                               <img src="/api/placeholder/400/300" alt="Jerarquía de escalas de medición" class="chart-img">
+                               <div class="chart-subtitle">Cada nivel superior incluye todas las propiedades de los niveles inferiores</div>
+                           </div>
+                       </div>
+                       <div class="column">
+                           <div class="card">
+                               <div class="card-title">Estadísticos apropiados por escala</div>
+                               <ul>
+                                   <li><strong>Nominal</strong>: Moda, frecuencias, proporciones</li>
+                                   <li><strong>Ordinal</strong>: Mediana, percentiles, rango</li>
+                                   <li><strong>Intervalo</strong>: Media, desviación estándar</li>
+                                   <li><strong>Razón</strong>: Media geométrica, coeficiente de variación</li>
+                               </ul>
+                           </div>
+                       </div>
+                   </div>
+
+                   <h3>Aplicación en el dataset del Titanic</h3>
+                   <p>En nuestro análisis:</p>
                    <ul>
-                       <li><code>character</code>: Cadenas de texto</li>
-                       <li><code>factor</code>: Variables categóricas</li>
-                       <li><code>numeric</code>: Números (enteros o decimales)</li>
-                       <li><code>integer</code>: Números enteros específicamente</li>
-                       <li><code>Date</code>: Fechas</li>
+                       <li>Para variables nominales como <code>Sex</code> y <code>Embarked</code>: analizaremos frecuencias y representaremos con gráficos de barras o circulares</li>
+                       <li>Para variables ordinales como <code>Pclass</code>: estudiaremos la distribución por categorías y examinaremos su relación con otras variables</li>
+                       <li>Para variables de razón como <code>Age</code> y <code>Fare</code>: podemos calcular medias, desviaciones estándar, y representar con histogramas o boxplots</li>
                    </ul>
+
+                   <div class="warning">
+                       <strong>Error común:</strong> Calcular medias para variables nominales u ordinales. Por ejemplo, si codificamos Survived como 0=No, 1=Sí, la "media" puede interpretarse como proporción de supervivientes, pero para Pclass (1,2,3), la media no tiene una interpretación directa significativa.
+                   </div>
                </div>
-               
-               <div class="step">
-                   <div class="step-title">Conversión entre tipos</div>
-                   <p>A menudo necesitamos convertir variables entre diferentes tipos:</p>
-                   <div class="code-sample">
-                       # Convertir texto a factor
-                       datos$weather_condition <- as.factor(datos$weather_condition)
+           </div>
+       </div>
+
+       <!-- Slide 8: Tablas de frecuencia -->
+       <div class="slide">
+           <div class="slide-content">
+               <div class="slide-header">
+                   <h1>Tablas de frecuencia en R</h1>
+               </div>
+               <div class="slide-body">
+                   <h3>¿Qué son las tablas de frecuencia?</h3>
+                   <p>Las tablas de frecuencia son herramientas fundamentales para resumir y presentar datos categóricos, mostrando cuántas veces ocurre cada valor o categoría en el conjunto de datos.</p>
+
+                   <div class="two-columns">
+                       <div class="column">
+                           <div class="card">
+                               <div class="card-title">Tipos de frecuencias</div>
+                               <ul>
+                                   <li><strong>Frecuencia absoluta</strong>: Conteo de casos en cada categoría</li>
+                                   <li><strong>Frecuencia relativa</strong>: Proporción respecto al total (0-1)</li>
+                                   <li><strong>Frecuencia porcentual</strong>: Porcentaje del total (0-100%)</li>
+                                   <li><strong>Frecuencia acumulada</strong>: Suma progresiva de frecuencias</li>
+                               </ul>
+                           </div>
+                       </div>
+                       <div class="column">
+                           <div class="chart">
+                               <div class="chart-title">Ejemplo de tabla de frecuencia</div>
+                               <img src="/api/placeholder/400/300" alt="Ejemplo de tabla de frecuencia" class="chart-img">
+                           </div>
+                       </div>
+                   </div>
+
+                   <h3>Creación de tablas de frecuencia en R</h3>
+                   <div class="steps">
+                       <div class="step">
+                           <div class="step-title">Con funciones base de R</div>
+                           <p>R base ofrece funciones simples pero efectivas para crear tablas de frecuencia:</p>
+                           <div class="code-sample">
+                               # Tabla de frecuencia absoluta
+                               freq <- table(titanic_data$Pclass)
+                               
+                               # Tabla de frecuencia relativa
+                               prop.table(freq)
+                               
+                               # Tabla de frecuencia porcentual
+                               prop.table(freq) * 100
+                               
+                               # Frecuencia acumulada
+                               cumsum(freq)
+                           </div>
+                       </div>
                        
-                       # Convertir texto a fecha
-                       datos$date <- as.Date(datos$date)
-                       
-                       # Crear categorías a partir de variables numéricas
-                       datos$temp_category <- cut(datos$temp_max, 
-                                                breaks = c(-Inf, 10, 20, 30, Inf),
-                                                labels = c("Frío", "Templado", "Cálido", "Muy caliente"))
+                       <div class="step">
+                           <div class="step-title">Con dplyr (tidyverse)</div>
+                           <p>dplyr ofrece un enfoque más versátil y con mejor formato:</p>
+                           <div class="code-sample">
+                               # Tabla de frecuencia completa con dplyr
+                               titanic_data %>%
+                                 count(Pclass) %>%
+                                 mutate(
+                                   porcentaje = round(n / sum(n) * 100, 2),
+                                   acumulado = cumsum(n),
+                                   porc_acum = round(cumsum(porcentaje), 2)
+                                 )
+                           </div>
+                       </div>
                    </div>
-               </div>
-           </div>
 
-           <div class="note">
-               <strong>Importancia para el análisis:</strong> El tipo de variable determina qué estadísticos calcular y qué gráficos utilizar. Para variables categóricas utilizaremos frecuencias, moda y gráficos de barras, mientras que para variables numéricas usaremos media, mediana, desviación estándar, histogramas, etc.
-           </div>
-       </div>
-   </div>
-</div>
-
-<!-- Slide 7: Escalas de medición -->
-<div class="slide">
-   <div class="slide-content">
-       <div class="slide-header">
-           <h1>Escalas de medición</h1>
-       </div>
-       <div class="slide-body">
-           <h3>Las cuatro escalas fundamentales</h3>
-           <p>Las escalas de medición definen el nivel de información contenido en una variable y determinan qué operaciones matemáticas y estadísticas son válidas.</p>
-           
-           <table>
-               <tr>
-                   <th>Escala</th>
-                   <th>Características</th>
-                   <th>Operaciones permitidas</th>
-                   <th>Ejemplos en nuestro dataset</th>
-               </tr>
-               <tr>
-                   <td><strong>Nominal</strong></td>
-                   <td>Categorías sin orden</td>
-                   <td>Igualdad/desigualdad (=, ≠)</td>
-                   <td>city, country, weather_condition</td>
-               </tr>
-               <tr>
-                   <td><strong>Ordinal</strong></td>
-                   <td>Categorías con orden</td>
-                   <td>Mayor/menor (>, <)</td>
-                   <td>Intensidad del viento (si la clasificáramos)</td>
-               </tr>
-               <tr>
-                   <td><strong>Intervalo</strong></td>
-                   <td>Distancias iguales, cero arbitrario</td>
-                   <td>Suma/resta (+, -)</td>
-                   <td>temperatura en °C (el cero es arbitrario)</td>
-               </tr>
-               <tr>
-                   <td><strong>Razón</strong></td>
-                   <td>Distancias iguales, cero absoluto</td>
-                   <td>Todas (incl. multiplicación/división)</td>
-                   <td>humedad (%), velocidad del viento (km/h)</td>
-               </tr>
-           </table>
-
-           <div class="two-columns">
-               <div class="column">
-                   <div class="chart">
-                       <div class="chart-title">Jerarquía de escalas de medición</div>
-                       <img src="/api/placeholder/400/300" alt="Jerarquía de escalas de medición" class="chart-img">
-                       <div class="chart-subtitle">Cada nivel superior incluye todas las propiedades de los niveles inferiores</div>
-                   </div>
-               </div>
-               <div class="column">
-                   <div class="card">
-                       <div class="card-title">Estadísticos apropiados por escala</div>
-                       <ul>
-                           <li><strong>Nominal</strong>: Moda, frecuencias, proporciones</li>
-                           <li><strong>Ordinal</strong>: Mediana, percentiles, rango</li>
-                           <li><strong>Intervalo</strong>: Media, desviación estándar</li>
-                           <li><strong>Razón</strong>: Media geométrica, coeficiente de variación</li>
-                       </ul>
-                   </div>
-               </div>
-           </div>
-
-           <h3>Aplicación en el dataset meteorológico</h3>
-           <p>En nuestro análisis:</p>
-           <ul>
-               <li>Para variables nominales como <code>weather_condition</code>: analizaremos frecuencias y representaremos con gráficos de barras o circulares</li>
-               <li>Para variables de razón como <code>humidity</code>: podemos calcular medias, desviaciones estándar, y representar con histogramas o boxplots</li>
-               <li>Para temperaturas (variables de intervalo): analizaremos medias, rangos y distribuciones</li>
-           </ul>
-
-           <div class="warning">
-               <strong>Error común:</strong> Calcular medias para variables nominales u ordinales. Por ejemplo, si codificamos Soleado=1, Nublado=2, Lluvioso=3, la "media" de estas condiciones no tendría sentido estadístico.
-           </div>
-       </div>
-   </div>
-</div>
-
-<!-- Slide 8: Tablas de frecuencia -->
-<div class="slide">
-   <div class="slide-content">
-       <div class="slide-header">
-           <h1>Tablas de frecuencia en R</h1>
-       </div>
-       <div class="slide-body">
-           <h3>¿Qué son las tablas de frecuencia?</h3>
-           <p>Las tablas de frecuencia son herramientas fundamentales para resumir y presentar datos categóricos, mostrando cuántas veces ocurre cada valor o categoría en el conjunto de datos.</p>
-
-           <div class="two-columns">
-               <div class="column">
-                   <div class="card">
-                       <div class="card-title">Tipos de frecuencias</div>
-                       <ul>
-                           <li><strong>Frecuencia absoluta</strong>: Conteo de casos en cada categoría</li>
-                           <li><strong>Frecuencia relativa</strong>: Proporción respecto al total (0-1)</li>
-                           <li><strong>Frecuencia porcentual</strong>: Porcentaje del total (0-100%)</li>
-                           <li><strong>Frecuencia acumulada</strong>: Suma progresiva de frecuencias</li>
-                       </ul>
-                   </div>
-               </div>
-               <div class="column">
-                   <div class="chart">
-                       <div class="chart-title">Ejemplo de tabla de frecuencia</div>
-                       <img src="/api/placeholder/400/300" alt="Ejemplo de tabla de frecuencia" class="chart-img">
-                   </div>
-               </div>
-           </div>
-
-           <h3>Creación de tablas de frecuencia en R</h3>
-           <div class="steps">
-               <div class="step">
-                   <div class="step-title">Con funciones base de R</div>
-                   <p>R base ofrece funciones simples pero efectivas para crear tablas de frecuencia:</p>
-                   <div class="code-sample">
-                       # Tabla de frecuencia absoluta
-                       freq <- table(weather_data$weather_condition)
-                       
-                       # Tabla de frecuencia relativa
-                       prop.table(freq)
-                       
-                       # Tabla de frecuencia porcentual
-                       prop.table(freq) * 100
-                       
-                       # Frecuencia acumulada
-                       cumsum(freq)
-                   </div>
-               </div>
-               
-               <div class="step">
-                   <div class="step-title">Con dplyr (tidyverse)</div>
-                   <p>dplyr ofrece un enfoque más versátil y con mejor formato:</p>
-                   <div class="code-sample">
-                       # Tabla de frecuencia completa con dplyr
-                       weather_data %>%
-                         count(weather_condition) %>%
-                         mutate(
-                           porcentaje = round(n / sum(n) * 100, 2),
-                           acumulado = cumsum(n),
-                           porc_acum = round(cumsum(porcentaje), 2)
-                         )
-                   </div>
-               </div>
-           </div>
-
-           <h3>Aplicaciones en nuestro dataset</h3>
-           <p>En nuestro análisis, crearemos tablas de frecuencia para variables categóricas clave:</p>
-           <ul>
-               <li>Frecuencia de diferentes condiciones meteorológicas (Soleado, Nublado, Lluvioso, etc.)</li>
-               <li>Distribución de observaciones por país</li>
-               <li>Frecuencia de rangos de temperatura (agrupando temperaturas en categorías)</li>
-           </ul>
-
-           <div class="chart">
-               <div class="chart-title">Distribución de condiciones meteorológicas</div>
-               <img src="/api/placeholder/700/350" alt="Distribución de condiciones meteorológicas" class="chart-img">
-           </div>
-       </div>
-   </div>
-</div>
-
-<!-- Slide 9: Tablas de contingencia -->
-<div class="slide">
-   <div class="slide-content">
-       <div class="slide-header">
-           <h1>Tablas de contingencia en R</h1>
-       </div>
-       <div class="slide-body">
-           <h3>¿Qué son las tablas de contingencia?</h3>
-           <p>Las tablas de contingencia (o tablas cruzadas) muestran la relación entre dos o más variables categóricas, permitiéndonos examinar cómo se distribuyen conjuntamente sus valores.</p>
-
-           <div class="img-container">
-               <img src="/api/placeholder/800/400" alt="Estructura de tabla de contingencia" style="max-width: 600px;">
-           </div>
-
-           <h3>Creación de tablas de contingencia en R</h3>
-           <div class="steps">
-               <div class="step">
-                   <div class="step-title">Con funciones base de R</div>
-                   <div class="code-sample">
-                       # Tabla de contingencia básica (país vs condición meteorológica)
-                       tabla_cont <- table(weather_data$country, weather_data$weather_condition)
-                       
-                       # Añadir totales marginales
-                       addmargins(tabla_cont)
-                       
-                       # Proporciones por fila (% dentro de cada país)
-                       prop.table(tabla_cont, 1) * 100
-                       
-                       # Proporciones por columna (% dentro de cada condición)
-                       prop.table(tabla_cont, 2) * 100
-                   </div>
-               </div>
-               
-               <div class="step">
-                   <div class="step-title">Con dplyr y tidyr</div>
-                   <div class="code-sample">
-                       # Tabla de contingencia con dplyr
-                       weather_data %>%
-                         count(country, weather_condition) %>%
-                         pivot_wider(
-                           names_from = weather_condition,
-                           values_from = n,
-                           values_fill = 0
-                         )
-                   </div>
-               </div>
-           </div>
-
-           <h3>Análisis de asociación</h3>
-           <p>Las tablas de contingencia nos permiten examinar si existe asociación entre variables categóricas:</p>
-           <div class="code-sample">
-               # Prueba Chi-cuadrado para evaluar asociación
-               chisq.test(tabla_cont)
-               
-               # Interpretación de resultados
-               # Si p-valor < 0.05: Existe asociación estadísticamente significativa
-               # Si p-valor ≥ 0.05: No hay evidencia suficiente de asociación
-           </div>
-
-           <div class="two-columns">
-               <div class="column">
-                   <div class="chart">
-                       <div class="chart-title">Condiciones meteorológicas por región</div>
-                       <img src="/api/placeholder/400/300" alt="Gráfico de barras apiladas" class="chart-img">
-                   </div>
-               </div>
-               <div class="column">
-                   <div class="chart">
-                       <div class="chart-title">Mapa de calor de condiciones por país</div>
-                       <img src="/api/placeholder/400/300" alt="Mapa de calor" class="chart-img">
-                   </div>
-               </div>
-           </div>
-
-           <div class="note">
-               <strong>Aplicaciones en nuestro dataset:</strong> Analizaremos relaciones como la distribución de condiciones meteorológicas por país, la relación entre rangos de temperatura y humedad, o la asociación entre velocidad del viento y condiciones meteorológicas.
-           </div>
-       </div>
-   </div>
-</div>
-
-<!-- Slide 10: Visualización de variables categóricas -->
-<div class="slide">
-   <div class="slide-content">
-       <div class="slide-header">
-           <h1>Visualización de variables categóricas con ggplot2</h1>
-       </div>
-       <div class="slide-body">
-           <h3>Importancia de la visualización</h3>
-           <p>La visualización efectiva de datos categóricos facilita la identificación de patrones, proporciones y relaciones que pueden no ser evidentes en tablas numéricas.</p>
-
-           <div class="two-columns">
-               <div class="column">
-                   <h3>Gráficos de barras</h3>
-                   <p>Los gráficos de barras son la forma más común y efectiva de visualizar variables categóricas, mostrando frecuencias o proporciones.</p>
-                   <div class="chart">
-                       <div class="chart-title">Gráfico de barras básico</div>
-                       <img src="/api/placeholder/400/300" alt="Gráfico de barras básico" class="chart-img">
-                   </div>
-                   <div class="code-sample">
-                       # Gráfico de barras básico
-                       ggplot(weather_data, aes(x = weather_condition, fill = weather_condition)) +
-                         geom_bar() +
-                         labs(title = "Distribución de condiciones meteorológicas",
-                              x = "Condición", y = "Frecuencia") +
-                         theme_minimal()
-                   </div>
-               </div>
-               <div class="column">
-                   <h3>Gráficos de barras agrupadas</h3>
-                   <p>Para visualizar la relación entre dos variables categóricas:</p>
-                   <div class="chart">
-                       <div class="chart-title">Gráfico de barras agrupadas</div>
-                       <img src="/api/placeholder/400/300" alt="Gráfico de barras agrupadas" class="chart-img">
-                   </div>
-                   <div class="code-sample">
-                       # Gráfico de barras agrupadas
-                       ggplot(weather_data, aes(x = continent, fill = weather_condition)) +
-                         geom_bar(position = "dodge") +
-                         labs(title = "Condiciones por continente",
-                              x = "Continente", y = "Frecuencia") +
-                         theme_minimal()
-                   </div>
-               </div>
-           </div>
-
-           <h3>Gráficos circulares</h3>
-           <p>Los gráficos circulares (o de pastel) muestran las proporciones como segmentos de un círculo.</p>
-           
-           <div class="two-columns">
-               <div class="column">
-                   <div class="chart">
-                       <div class="chart-title">Gráfico circular</div>
-                       <img src="/api/placeholder/400/300" alt="Gráfico circular" class="chart-img">
-                   </div>
-               </div>
-               <div class="column">
-                   <div class="code-sample">
-                       # Preparar datos para gráfico circular
-                       weather_counts <- weather_data %>%
-                         count(weather_condition) %>%
-                         mutate(porcentaje = n / sum(n) * 100)
-                       
-                       # Crear gráfico circular
-                       ggplot(weather_counts, aes(x = "", y = n, fill = weather_condition)) +
-                         geom_bar(stat = "identity", width = 1) +
-                         coord_polar("y", start = 0) +
-                         labs(title = "Distribución de condiciones meteorológicas") +
-                         theme_minimal()
-                   </div>
-               </div>
-           </div>
-
-           <div class="warning">
-               <strong>Limitaciones de los gráficos circulares:</strong> Aunque son visualmente atractivos, los gráficos circulares tienen limitaciones para la interpretación precisa. El cerebro humano percibe mejor las diferencias en longitud (gráficos de barras) que en ángulos o áreas (gráficos circulares). Use gráficos circulares principalmente cuando:
-               <ul>
-                   <li>Tenga pocas categorías (≤ 5)</li>
-                   <li>Quiera enfatizar proporciones respecto al total</li>
-                   <li>Las diferencias entre categorías sean sustanciales</li>
-               </ul>
-           </div>
-       </div>
-   </div>
-</div>
-
-<!-- Slide 11: Actividad práctica -->
-<div class="slide">
-   <div class="slide-content">
-       <div class="slide-header">
-           <h1>Actividad práctica: Análisis descriptivo</h1>
-       </div>
-       <div class="slide-body">
-           <h3>Proyecto: Análisis descriptivo del dataset meteorológico</h3>
-           <p>Aplicaremos los conceptos aprendidos para realizar un análisis descriptivo completo de nuestro dataset de datos meteorológicos globales.</p>
-
-           <div class="steps">
-               <div class="step">
-                   <div class="step-title">Importación y preparación de datos</div>
+                   <h3>Aplicaciones en nuestro dataset</h3>
+                   <p>En nuestro análisis, crearemos tablas de frecuencia para variables categóricas clave:</p>
                    <ul>
-                       <li>Descargar el dataset desde Kaggle</li>
-                       <li>Importar el CSV usando readr</li>
-                       <li>Examinar la estructura y limpiar los datos si es necesario</li>
-                       <li>Convertir variables a los tipos apropiados (factores, fechas, etc.)</li>
+                       <li>Distribución de supervivencia (Survived: 0=No, 1=Sí)</li>
+                       <li>Frecuencia por clase de pasajero (Pclass: 1, 2, 3)</li>
+                       <li>Distribución por sexo (Sex: male, female)</li>
+                       <li>Frecuencia por puerto de embarque (Embarked: C, Q, S)</li>
                    </ul>
-               </div>
-               
-               <div class="step">
-                   <div class="step-title">Análisis de variables categóricas</div>
-                   <ul>
-                       <li>Crear tablas de frecuencia para country, city y weather_condition</li>
-                       <li>Calcular proporciones y porcentajes</li>
-                       <li>Visualizar distribuciones con gráficos de barras</li>
-                       <li>Crear una categorización de temperaturas (frío, templado, cálido, etc.)</li>
-                   </ul>
-               </div>
-               
-               <div class="step">
-                   <div class="step-title">Análisis de relaciones entre variables</div>
-                   <ul>
-                       <li>Crear tablas de contingencia entre weather_condition y continent</li>
-                       <li>Analizar la distribución de condiciones meteorológicas por región</li>
-                       <li>Evaluar la asociación estadística con pruebas Chi-cuadrado</li>
-                       <li>Visualizar relaciones con gráficos de barras agrupadas y mapas de calor</li>
-                   </ul>
-               </div>
-               
-               <div class="step">
-                   <div class="step-title">Creación de visualizaciones avanzadas</div>
-                   <ul>
-                       <li>Diseñar gráficos personalizados con colores representativos</li>
-                       <li>Crear visualizaciones que muestren múltiples variables</li>
-                       <li>Añadir etiquetas informativas y títulos claros</li>
-                       <li>Experimentar con diferentes tipos de gráficos para encontrar el más adecuado</li>
-                   </ul>
-               </div>
-               
-               <div class="step">
-                   <div class="step-title">Interpretación de resultados</div>
-                   <ul>
-                       <li>Identificar patrones principales en los datos</li>
-                       <li>Formular conclusiones sobre distribuciones y relaciones</li>
-                       <li>Documentar hallazgos con ejemplos visuales claros</li>
-                       <li>Proponer preguntas para análisis posteriores</li>
-                   </ul>
-               </div>
-           </div>
 
-           <div class="tip">
-               <strong>Para seguir la actividad:</strong> Utiliza el script R proporcionado que contiene todos los comandos necesarios para realizar este análisis paso a paso. El script incluye comentarios detallados y explicaciones para cada sección.
-           </div>
-
-           <div class="note">
-               <strong>Entregable:</strong> Al final de la actividad, tendrás un análisis descriptivo completo de las variables categóricas del dataset, incluyendo tablas de frecuencia, visualizaciones y conclusiones sobre patrones meteorológicos globales.
+                   <div class="chart">
+                       <div class="chart-title">Distribución de supervivencia por clase</div>
+                       <img src="/api/placeholder/700/350" alt="Distribución de supervivencia por clase" class="chart-img">
+                   </div>
+               </div>
            </div>
        </div>
-   </div>
-</div>
 
-<!-- Slide 12: Resumen y próximos pasos -->
-<div class="slide">
-   <div class="slide-content">
-       <div class="slide-header">
-           <h1>Resumen y próximos pasos</h1>
-       </div>
-       <div class="slide-body">
-           <h3>Conceptos clave aprendidos</h3>
-           <div class="two-columns">
-               <div class="column">
-                   <div class="card">
-                       <div class="card-title">Semana 2</div>
-                       <ul>
-                           <li>Importación y exportación de datos CSV</li>
-                           <li>Uso del ecosistema tidyverse para manipulación</li>
-                           <li>Exploración inicial de conjuntos de datos</li>
-                           <li>Uso de verbos dplyr para transformación de datos</li>
-                       </ul>
-                   </div>
-                   <div class="card">
-                       <div class="card-title">Técnicas aprendidas</div>
-                       <ul>
-                           <li>Instalación y carga de paquetes en R</li>
-                           <li>Encadenamiento de operaciones con el operador pipe (%>%)</li>
-                           <li>Limpieza y preparación básica de datos</li>
-                           <li>Pruebas estadísticas para variables categóricas</li>
-                       </ul>
-                   </div>
+       <!-- Slide 9: Tablas de contingencia -->
+       <div class="slide">
+           <div class="slide-content">
+               <div class="slide-header">
+                   <h1>Tablas de contingencia en R</h1>
                </div>
-               <div class="column">
-                   <div class="card">
-                       <div class="card-title">Semana 3</div>
-                       <ul>
-                           <li>Distinción entre variables cualitativas y cuantitativas</li>
-                           <li>Escalas de medición y sus características</li>
-                           <li>Tablas de frecuencia y contingencia</li>
-                           <li>Visualización de datos categóricos</li>
-                       </ul>
-                   </div>
-                   <div class="card">
-                       <div class="card-title">Dataset meteorológico</div>
-                       <ul>
-                           <li>Variables categóricas: país, ciudad, condición meteorológica</li>
-                           <li>Variables numéricas: temperaturas, humedad, velocidad del viento</li>
-                           <li>Distribución global con diversidad de condiciones</li>
-                           <li>Relaciones entre ubicaciones y patrones climáticos</li>
-                       </ul>
-                   </div>
-               </div>
-           </div>
+               <div class="slide-body">
+                   <h3>¿Qué son las tablas de contingencia?</h3>
+                   <p>Las tablas de contingencia (o tablas cruzadas) muestran la relación entre dos o más variables categóricas, permitiéndonos examinar cómo se distribuyen conjuntamente sus valores.</p>
 
-           <h3>Próximas sesiones</h3>
-           <div class="steps">
-               <div class="step">
-                   <div class="step-title">Semana 4: Estadística descriptiva II</div>
-                   <p>Profundizaremos en medidas de tendencia central (media, mediana, moda) y posición (cuartiles, percentiles) para variables cuantitativas, implementándolas en R.</p>
-               </div>
-               <div class="step">
-                   <div class="step-title">Semana 5: Estadística descriptiva III</div>
-                   <p>Estudiaremos medidas de dispersión (varianza, desviación estándar) y técnicas para detectar valores atípicos, visualizando distribuciones con histogramas y gráficos de densidad.</p>
-               </div>
-               <div class="step">
-                   <div class="step-title">Semana 6: Análisis exploratorio de datos</div>
-                   <p>Integraremos todo lo aprendido en un enfoque sistemático para el análisis exploratorio, utilizando boxplots, scatterplots y otras herramientas visuales avanzadas.</p>
-               </div>
-           </div>
+                   <div class="img-container">
+                       <img src="/api/placeholder/800/400" alt="Estructura de tabla de contingencia" style="max-width: 600px;">
+                   </div>
 
-           <h3>Recursos adicionales</h3>
-           <div class="two-columns">
-               <div class="column">
-                   <div class="card">
-                       <div class="card-title">Libros recomendados</div>
-                       <ul>
-                           <li>R for Data Science (Wickham & Grolemund)</li>
-                           <li>R Graphics Cookbook (Chang)</li>
-                           <li>R in Action (Kabacoff)</li>
-                           <li>Fundamentals of Data Visualization (Wilke)</li>
-                       </ul>
+                   <h3>Creación de tablas de contingencia en R</h3>
+                   <div class="steps">
+                       <div class="step">
+                           <div class="step-title">Con funciones base de R</div>
+                           <div class="code-sample">
+                               # Tabla de contingencia básica (sexo vs supervivencia)
+                               tabla_cont <- table(titanic_data$Sex, titanic_data$Survived)
+                               
+                               # Añadir totales marginales
+                               addmargins(tabla_cont)
+                               
+                               # Proporciones por fila (% dentro de cada sexo)
+                               prop.table(tabla_cont, 1) * 100
+                               
+                               # Proporciones por columna (% dentro de cada grupo de supervivencia)
+                               prop.table(tabla_cont, 2) * 100
+                           </div>
+                       </div>
+                       
+                       <div class="step">
+                           <div class="step-title">Con dplyr y tidyr</div>
+                           <div class="code-sample">
+                               # Tabla de contingencia con dplyr
+                               titanic_data %>%
+                                 count(Sex, Survived) %>%
+                                 pivot_wider(
+                                   names_from = Survived,
+                                   values_from = n,
+                                   values_fill = 0
+                                 )
+                           </div>
+                       </div>
+                   </div>
+
+                   <h3>Análisis de asociación</h3>
+                   <p>Las tablas de contingencia nos permiten examinar si existe asociación entre variables categóricas:</p>
+                   <div class="code-sample">
+                       # Prueba Chi-cuadrado para evaluar asociación
+                       chisq.test(tabla_cont)
+                       
+                       # Interpretación de resultados
+                       # Si p-valor < 0.05: Existe asociación estadísticamente significativa
+                       # Si p-valor ≥ 0.05: No hay evidencia suficiente de asociación
+                   </div>
+
+                   <div class="two-columns">
+                       <div class="column">
+                           <div class="chart">
+                               <div class="chart-title">Supervivencia por sexo</div>
+                               <img src="/api/placeholder/400/300" alt="Gráfico de barras apiladas" class="chart-img">
+                           </div>
+                       </div>
+                       <div class="column">
+                           <div class="chart">
+                               <div class="chart-title">Mapa de calor de supervivencia por clase</div>
+                               <img src="/api/placeholder/400/300" alt="Mapa de calor" class="chart-img">
+                           </div>
+                       </div>
+                   </div>
+
+                   <div class="note">
+                       <strong>Aplicaciones en nuestro dataset:</strong> Analizaremos relaciones como la distribución de supervivencia por clase, la relación entre sexo y supervivencia, o la asociación entre el puerto de embarque y la clase de pasajero.
                    </div>
                </div>
-               <div class="column">
-                   <div class="card">
-                       <div class="card-title">Recursos en línea</div>
-                       <ul>
-                           <li>RStudio Cheatsheets: <a href="#">rstudio.com/resources/cheatsheets</a></li>
-                           <li>R-bloggers: <a href="#">r-bloggers.com</a></li>
-                           <li>Tidyverse documentation: <a href="#">tidyverse.org</a></li>
-                           <li>Dataset meteorológico: <a href="#">kaggle.com/datasets/samanemami/global-weather-data-daily</a></li>
-                       </ul>
-                   </div>
-               </div>
-           </div>
-
-           <div class="note">
-               <strong>Para la próxima clase:</strong> Practique los conceptos aprendidos con el dataset meteorológico. Experimente creando diferentes tablas de frecuencia y visualizaciones para las variables categóricas, e intente crear sus propias categorizaciones para variables numéricas.
            </div>
        </div>
-   </div>
-</div>
+
+       <!-- Slide 10: Visualización de variables categóricas -->
+       <div class="slide">
+           <div class="slide-content">
+               <div class="slide-header">
+                   <h1>Visualización de variables categóricas con ggplot2</h1>
+               </div>
+               <div class="slide-body">
+                   <h3>Importancia de la visualización</h3>
+                   <p>La visualización efectiva de datos categóricos facilita la identificación de patrones, proporciones y relaciones que pueden no ser evidentes en tablas numéricas.</p>
+
+                   <div class="two-columns">
+                       <div class="column">
+                           <h3>Gráficos de barras</h3>
+                           <p>Los gráficos de barras son la forma más común y efectiva de visualizar variables categóricas, mostrando frecuencias o proporciones.</p>
+                           <div class="chart">
+                               <div class="chart-title">Gráfico de barras básico</div>
+                               <img src="/api/placeholder/400/300" alt="Gráfico de barras básico" class="chart-img">
+                           </div>
+                           <div class="code-sample">
+                               # Gráfico de barras básico
+                               ggplot(titanic_data, aes(x = Pclass, fill = factor(Pclass))) +
+                                 geom_bar() +
+                                 labs(title = "Distribución por clase de pasajero",
+                                      x = "Clase", y = "Frecuencia") +
+                                 theme_minimal()
+                           </div>
+                       </div>
+                       <div class="column">
+                           <h3>Gráficos de barras agrupadas</h3>
+                           <p>Para visualizar la relación entre dos variables categóricas:</p>
+                           <div class="chart">
+                               <div class="chart-title">Gráfico de barras agrupadas</div>
+                               <img src="/api/placeholder/400/300" alt="Gráfico de barras agrupadas" class="chart-img">
+                           </div>
+                           <div class="code-sample">
+                               # Gráfico de barras agrupadas
+                               ggplot(titanic_data, aes(x = Pclass, fill = factor(Survived))) +
+                                 geom_bar(position = "dodge") +
+                                 labs(title = "Supervivencia por clase",
+                                      x = "Clase", y = "Frecuencia") +
+                                 theme_minimal()
+                           </div>
+                       </div>
+                   </div>
+
+                   <h3>Gráficos circulares</h3>
+                   <p>Los gráficos circulares (o de pastel) muestran las proporciones como segmentos de un círculo.</p>
+                   
+                   <div class="two-columns">
+                       <div class="column">
+                           <div class="chart">
+                               <div class="chart-title">Gráfico circular</div>
+                               <img src="/api/placeholder/400/300" alt="Gráfico circular" class="chart-img">
+                           </div>
+                       </div>
+                       <div class="column">
+                           <div class="code-sample">
+                               # Preparar datos para gráfico circular
+                               class_counts <- titanic_data %>%
+                                 count(Pclass) %>%
+                                 mutate(porcentaje = n / sum(n) * 100)
+                               
+                               # Crear gráfico circular
+                               ggplot(class_counts, aes(x = "", y = n, fill = factor(Pclass))) +
+                                 geom_bar(stat = "identity", width = 1) +
+                                 coord_polar("y", start = 0) +
+                                 labs(title = "Distribución por clase de pasajero") +
+                                 theme_minimal()
+                           </div>
+                       </div>
+                   </div>
+
+                   <div class="warning">
+                       <strong>Limitaciones de los gráficos circulares:</strong> Aunque son visualmente atractivos, los gráficos circulares tienen limitaciones para la interpretación precisa. El cerebro humano percibe mejor las diferencias en longitud (gráficos de barras) que en ángulos o áreas (gráficos circulares). Use gráficos circulares principalmente cuando:
+                       <ul>
+                           <li>Tenga pocas categorías (≤ 5)</li>
+                           <li>Quiera enfatizar proporciones respecto al total</li>
+                           <li>Las diferencias entre categorías sean sustanciales</li>
+                       </ul>
+                   </div>
+               </div>
+           </div>
+       </div>
+
+       <!-- Slide 11: Actividad práctica -->
+       <div class="slide">
+           <div class="slide-content">
+               <div class="slide-header">
+                   <h1>Actividad práctica: Análisis descriptivo</h1>
+               </div>
+               <div class="slide-body">
+                   <h3>Proyecto: Análisis descriptivo del dataset Titanic</h3>
+                   <p>Aplicaremos los conceptos aprendidos para realizar un análisis descriptivo completo del famoso dataset del Titanic.</p>
+
+                   <div class="steps">
+                       <div class="step">
+                           <div class="step-title">Importación y preparación de datos</div>
+                           <ul>
+                               <li>Importar el dataset titanic.csv usando readr</li>
+                               <li>Examinar la estructura y limpiar los datos si es necesario</li>
+                               <li>Convertir variables a los tipos apropiados (factores, numéricos, etc.)</li>
+                               <li>Manejar valores faltantes en columnas como Age y Cabin</li>
+                           </ul>
+                       </div>
+                       
+                       <div class="step">
+                           <div class="step-title">Análisis de variables categóricas</div>
+                           <ul>
+                               <li>Crear tablas de frecuencia para Survived, Pclass, Sex y Embarked</li>
+                               <li>Calcular proporciones y porcentajes</li>
+                               <li>Visualizar distribuciones con gráficos de barras</li>
+                               <li>Crear una categorización de edades (niños, jóvenes, adultos, mayores)</li>
+                           </ul>
+                       </div>
+                       
+                       <div class="step">
+                           <div class="step-title">Análisis de relaciones entre variables</div>
+                           <ul>
+                               <li>Crear tablas de contingencia entre Survived y Sex/Pclass/Embarked</li>
+                               <li>Analizar la distribución de supervivencia por factores demográficos</li>
+                               <li>Evaluar la asociación estadística con pruebas Chi-cuadrado</li>
+                               <li>Visualizar relaciones con gráficos de barras agrupadas y mapas de calor</li>
+                           </ul>
+                       </div>
+                       
+                       <div class="step">
+                           <div class="step-title">Creación de visualizaciones avanzadas</div>
+                           <ul>
+                               <li>Diseñar gráficos personalizados con colores representativos</li>
+                               <li>Crear visualizaciones que muestren múltiples variables</li>
+                               <li>Añadir etiquetas informativas y títulos claros</li>
+                               <li>Experimentar con diferentes tipos de gráficos para encontrar el más adecuado</li>
+                           </ul>
+                       </div>
+                       
+                       <div class="step">
+                           <div class="step-title">Interpretación de resultados</div>
+                           <ul>
+                               <li>Identificar factores que influyeron en la supervivencia</li>
+                               <li>Formular conclusiones sobre la distribución de pasajeros</li>
+                               <li>Documentar hallazgos con ejemplos visuales claros</li>
+                               <li>Proponer preguntas para análisis posteriores</li>
+                           </ul>
+                       </div>
+                   </div>
+
+                   <div class="tip">
+                       <strong>Para seguir la actividad:</strong> Utiliza el script R proporcionado que contiene todos los comandos necesarios para realizar este análisis paso a paso. El script incluye comentarios detallados y explicaciones para cada sección.
+                   </div>
+
+                   <div class="note">
+                       <strong>Entregable:</strong> Al final de la actividad, tendrás un análisis descriptivo completo de las variables categóricas del dataset, incluyendo tablas de frecuencia, visualizaciones y conclusiones sobre los factores que influyeron en la supervivencia del Titanic.
+                   </div>
+               </div>
+           </div>
+       </div>
+
+       <!-- Slide 12: Resumen y próximos pasos -->
+       <div class="slide">
+           <div class="slide-content">
+               <div class="slide-header">
+                   <h1>Resumen y próximos pasos</h1>
+               </div>
+               <div class="slide-body">
+                   <h3>Conceptos clave aprendidos</h3>
+                   <div class="two-columns">
+                       <div class="column">
+                           <div class="card">
+                               <div class="card-title">Semana 2</div>
+                               <ul>
+                                   <li>Importación y exportación de datos CSV</li>
+                                   <li>Uso del ecosistema tidyverse para manipulación</li>
+                                   <li>Exploración inicial de conjuntos de datos</li>
+                                   <li>Uso de verbos dplyr para transformación de datos</li>
+                               </ul>
+                           </div>
+                           <div class="card">
+                               <div class="card-title">Técnicas aprendidas</div>
+                               <ul>
+                                   <li>Instalación y carga de paquetes en R</li>
+                                   <li>Encadenamiento de operaciones con el operador pipe (%>%)</li>
+                                   <li>Limpieza y preparación básica de datos</li>
+                                   <li>Pruebas estadísticas para variables categóricas</li>
+                               </ul>
+                           </div>
+                       </div>
+                       <div class="column">
+                           <div class="card">
+                               <div class="card-title">Semana 3</div>
+                               <ul>
+                                   <li>Distinción entre variables cualitativas y cuantitativas</li>
+                                   <li>Escalas de medición y sus características</li>
+                                   <li>Tablas de frecuencia y contingencia</li>
+                                   <li>Visualización de datos categóricos</li>
+                               </ul>
+                           </div>
+                           <div class="card">
+                               <div class="card-title">Dataset del Titanic</div>
+                               <ul>
+                                   <li>1,309 pasajeros con 12 variables</li>
+                                   <li>Variables categóricas: Survived, Pclass, Sex, Embarked</li>
+                                   <li>Variables numéricas: Age, Fare, SibSp, Parch</li>
+                                   <li>Datos históricos del desastre de 1912</li>
+                               </ul>
+                           </div>
+                       </div>
+                   </div>
+
+                   <h3>Próximas sesiones</h3>
+                   <div class="steps">
+                       <div class="step">
+                           <div class="step-title">Semana 4: Estadística descriptiva II</div>
+                           <p>Profundizaremos en medidas de tendencia central (media, mediana, moda) y posición (cuartiles, percentiles) para variables cuantitativas, implementándolas en R.</p>
+                       </div>
+                       <div class="step">
+                           <div class="step-title">Semana 5: Estadística descriptiva III</div>
+                           <p>Estudiaremos medidas de dispersión (varianza, desviación estándar) y técnicas para detectar valores atípicos, visualizando distribuciones con histogramas y gráficos de densidad.</p>
+                       </div>
+                       <div class="step">
+                           <div class="step-title">Semana 6: Análisis exploratorio de datos</div>
+                           <p>Integraremos todo lo aprendido en un enfoque sistemático para el análisis exploratorio, utilizando boxplots, scatterplots y otras herramientas visuales avanzadas.</p>
+                       </div>
+                   </div>
+
+                   <h3>Recursos adicionales</h3>
+                   <div class="two-columns">
+                       <div class="column">
+                           <div class="card">
+                               <div class="card-title">Libros recomendados</div>
+                               <ul>
+                                   <li>R for Data Science (Wickham & Grolemund)</li>
+                                   <li>R Graphics Cookbook (Chang)</li>
+                                   <li>R in Action (Kabacoff)</li>
+                                   <li>Fundamentals of Data Visualization (Wilke)</li>
+                               </ul>
+                           </div>
+                       </div>
+                       <div class="column">
+                           <div class="card">
+                               <div class="card-title">Recursos en línea</div>
+                               <ul>
+                                   <li>RStudio Cheatsheets: <a href="#">rstudio.com/resources/cheatsheets</a></li>
+                                   <li>R-bloggers: <a href="#">r-bloggers.com</a></li>
+                                   <li>Tidyverse documentation: <a href="#">tidyverse.org</a></li>
+                                   <li>Dataset Titanic: <a href="#">kaggle.com/c/titanic/data</a></li>
+                               </ul>
+                           </div>
+                       </div>
+                   </div>
+
+                   <div class="note">
+                       <strong>Para la próxima clase:</strong> Practique los conceptos aprendidos con el dataset del Titanic. Experimente creando diferentes tablas de frecuencia y visualizaciones para las variables categóricas, e intente crear sus propias categorizaciones para variables numéricas.
+                   </div>
+               </div>
+           </div>
+       </div>
 
        <!-- Controles de navegación -->
        <div class="controls">
